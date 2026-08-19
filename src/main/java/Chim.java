@@ -19,6 +19,9 @@ public class Chim {
         System.out.println("What can I do for you?");
         System.out.println(line);
 
+        String[] tasks = new String[100];
+        int taskCount = 0;
+
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String input = scanner.nextLine().trim();
@@ -30,8 +33,19 @@ public class Chim {
                 break;
             }
 
+            if (input.equals("list")) {
+                System.out.println(line);
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println(" " + (i + 1) + ". " + tasks[i]);
+                }
+                System.out.println(line);
+                continue;
+            }
+
+            tasks[taskCount] = input;
+            taskCount++;
             System.out.println(line);
-            System.out.println(input);
+            System.out.println(" added: " + input);
             System.out.println(line);
         }
 
