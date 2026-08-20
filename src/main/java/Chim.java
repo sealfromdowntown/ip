@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Chim {
     public static void main(String[] args) {
@@ -19,8 +20,7 @@ public class Chim {
         System.out.println("What can I do for you?");
         System.out.println(line);
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -36,8 +36,8 @@ public class Chim {
                 if (input.equals("list")) {
                     System.out.println(line);
                     System.out.println(" Here are the tasks in your list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println(" " + (i + 1) + "." + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println(" " + (i + 1) + "." + tasks.get(i));
                     }
                     System.out.println(line);
                     continue;
@@ -45,20 +45,31 @@ public class Chim {
 
                 if (input.startsWith("mark ")) {
                     int index = Integer.parseInt(input.substring(5).trim()) - 1;
-                    tasks[index].markAsDone();
+                    tasks.get(index).markAsDone();
                     System.out.println(line);
                     System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("   " + tasks[index]);
+                    System.out.println("   " + tasks.get(index));
                     System.out.println(line);
                     continue;
                 }
 
                 if (input.startsWith("unmark")) {
-                    int index = parseIndex(input, "unmark", taskCount);
-                    tasks[index].markAsNotDone();
+                    int index = parseIndex(input, "unmark", tasks.size());
+                    tasks.get(index).markAsNotDone();
                     System.out.println(line);
                     System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("   " + tasks[index]);
+                    System.out.println("   " + tasks.get(index));
+                    System.out.println(line);
+                    continue;
+                }
+
+                if (input.startsWith("delete")) {
+                    int index = parseIndex(input, "delete", tasks.size());
+                    Task removed = tasks.remove(index);
+                    System.out.println(line);
+                    System.out.println(" Noted. I've removed this task:");
+                    System.out.println("   " + removed);
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
                     continue;
                 }
@@ -71,14 +82,9 @@ public class Chim {
                     if (description.isEmpty()) {
                         throw new ChimException("OOPS!!! The description of a todo cannot be empty.");
                     }
-                    // Validate: array must have room
-                    if (taskCount >= tasks.length) {
-                        throw new ChimException("OOPS!!! Your task list is full, I can't add any more.");
-                    }
 
-                    tasks[taskCount] = new Todo(description);
-                    taskCount++;
-                    printAddedMessage(line, tasks[taskCount - 1], taskCount);
+                    tasks.add(new Todo(description));
+                    printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
 
@@ -101,13 +107,8 @@ public class Chim {
                     if (by.isEmpty()) {
                         throw new ChimException("OOPS!!! Please tell me when the deadline is due.");
                     }
-                    if (taskCount >= tasks.length) {
-                        throw new ChimException("OOPS!!! Your task list is full, I can't add any more.");
-                    }
-
-                    tasks[taskCount] = new Deadline(description, by);
-                    taskCount++;
-                    printAddedMessage(line, tasks[taskCount - 1], taskCount);
+                    tasks.add(new Todo(description));
+                    printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
 
@@ -138,13 +139,8 @@ public class Chim {
                     if (from.isEmpty() || to.isEmpty()) {
                         throw new ChimException("OOPS!!! Please provide both a start and end time for the event.");
                     }
-                    if (taskCount >= tasks.length) {
-                        throw new ChimException("OOPS!!! Your task list is full, I can't add any more.");
-                    }
-
-                    tasks[taskCount] = new Event(description, from, to);
-                    taskCount++;
-                    printAddedMessage(line, tasks[taskCount - 1], taskCount);
+                    tasks.add(new Todo(description));
+                    printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
 
