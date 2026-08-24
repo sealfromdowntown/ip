@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class Storage {
                     task = new Todo(description);
                     break;
                 case "D":
-                    task = new Deadline(description, parts[3]);
+                    task = new Deadline(description, LocalDate.parse(parts[3]));
                     break;
                 case "E":
                     task = new Event(description, parts[3], parts[4]);

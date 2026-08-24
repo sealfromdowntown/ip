@@ -1,6 +1,7 @@
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-
+import java.util.Scanner;
 
 /**
  * Represents a chatbot that manages a list of tasks based on user commands
@@ -125,7 +126,15 @@ public class Chim {
                     if (by.isEmpty()) {
                         throw new ChimException("OOPS!!! Please tell me when the deadline is due.");
                     }
-                    tasks.add(new Deadline(description, by));
+
+                    LocalDate byDate;
+                    try {
+                        byDate = LocalDate.parse(by);
+                    } catch (DateTimeParseException e) {
+                        throw new ChimException("OOPS!!! Please give the date in yyyy-mm-dd format, e.g. 2019-10-15.");
+                    }
+
+                    tasks.add(new Deadline(description, byDate));
                     storage.save(tasks);
                     printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
