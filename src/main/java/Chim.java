@@ -20,7 +20,8 @@ public class Chim {
         System.out.println("What can I do for you?");
         System.out.println(line);
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage("./data/chim.txt");
+        ArrayList<Task> tasks = storage.load();
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
