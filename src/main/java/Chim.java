@@ -47,6 +47,7 @@ public class Chim {
                 if (input.startsWith("mark ")) {
                     int index = Integer.parseInt(input.substring(5).trim()) - 1;
                     tasks.get(index).markAsDone();
+                    storage.save(tasks);
                     System.out.println(line);
                     System.out.println(" Nice! I've marked this task as done:");
                     System.out.println("   " + tasks.get(index));
@@ -57,6 +58,7 @@ public class Chim {
                 if (input.startsWith("unmark")) {
                     int index = parseIndex(input, "unmark", tasks.size());
                     tasks.get(index).markAsNotDone();
+                    storage.save(tasks);
                     System.out.println(line);
                     System.out.println(" OK, I've marked this task as not done yet:");
                     System.out.println("   " + tasks.get(index));
@@ -67,6 +69,7 @@ public class Chim {
                 if (input.startsWith("delete")) {
                     int index = parseIndex(input, "delete", tasks.size());
                     Task removed = tasks.remove(index);
+                    storage.save(tasks);
                     System.out.println(line);
                     System.out.println(" Noted. I've removed this task:");
                     System.out.println("   " + removed);
@@ -85,6 +88,7 @@ public class Chim {
                     }
 
                     tasks.add(new Todo(description));
+                    storage.save(tasks);
                     printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
@@ -109,6 +113,7 @@ public class Chim {
                         throw new ChimException("OOPS!!! Please tell me when the deadline is due.");
                     }
                     tasks.add(new Deadline(description, by));
+                    storage.save(tasks);
                     printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
@@ -141,6 +146,7 @@ public class Chim {
                         throw new ChimException("OOPS!!! Please provide both a start and end time for the event.");
                     }
                     tasks.add(new Event(description, from, to));
+                    storage.save(tasks);
                     printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
