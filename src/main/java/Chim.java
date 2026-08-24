@@ -1,7 +1,20 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
+
+/**
+ * Represents a chatbot that manages a list of tasks based on user commands
+ * entered via the command line, and persists them to disk between runs.
+ */
 public class Chim {
+
+    /**
+     * Runs the Chim chatbot: prints the greeting, loads any saved tasks
+     * from disk, then repeatedly reads and processes user commands until
+     * the user types "bye".
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         String logo =
                 "  #####  #     # ###  #     # \n"

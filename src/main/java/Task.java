@@ -1,8 +1,19 @@
+/**
+ * Represents a task with a description and a completion status.
+ * Serves as the base class for Todo, Deadline, and Event.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;
     protected TaskType type;
 
+    /**
+     * Creates a task with the given description and type. The task is
+     * not done by default.
+     *
+     * @param description Description of the task.
+     * @param type Type of the task (TODO, DEADLINE, or EVENT).
+     */
     public Task(String description, TaskType type) {
         this.description = description;
         this.isDone = false;
