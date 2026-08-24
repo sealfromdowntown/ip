@@ -107,7 +107,7 @@ public class Chim {
                     if (by.isEmpty()) {
                         throw new ChimException("OOPS!!! Please tell me when the deadline is due.");
                     }
-                    tasks.add(new Todo(description));
+                    tasks.add(new Deadline(description, by));
                     printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
@@ -139,7 +139,7 @@ public class Chim {
                     if (from.isEmpty() || to.isEmpty()) {
                         throw new ChimException("OOPS!!! Please provide both a start and end time for the event.");
                     }
-                    tasks.add(new Todo(description));
+                    tasks.add(new Event(description, from, to));
                     printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
