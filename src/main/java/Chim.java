@@ -1,4 +1,5 @@
 import chim.exception.ChimException;
+import chim.parser.Parser;
 import chim.storage.Storage;
 import chim.task.TaskList;
 import chim.ui.Ui;
@@ -7,7 +8,7 @@ import java.util.Scanner;
 
 /**
  * Represents the Chim chatbot: wires together chim.ui.Ui, chim.storage.Storage, chim.task.TaskList, and
- * Parser, and runs the main read-process-respond loop.
+ * chim.parser.Parser, and runs the main read-process-respond loop.
  */
 public class Chim {
 

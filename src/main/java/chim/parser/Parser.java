@@ -1,3 +1,5 @@
+package chim.parser;
+
 import chim.exception.ChimException;
 import chim.storage.Storage;
 import chim.task.*;
