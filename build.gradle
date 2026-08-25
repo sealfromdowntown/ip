@@ -48,7 +48,9 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveBaseName.set('chim')
+    archiveVersion.set('')
+    archiveClassifier.set('')
 }
 
 run {
