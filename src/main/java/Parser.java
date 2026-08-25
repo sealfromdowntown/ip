@@ -1,3 +1,5 @@
+import chim.task.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
@@ -12,7 +14,7 @@ public class Parser {
      * represents.
      *
      * @param input Raw line of input from the user.
-     * @param tasks Task list to operate on.
+     * @param tasks chim.task.Task list to operate on.
      * @param ui Ui used to display results.
      * @param storage Storage used to persist changes to disk.
      * @return false if the command was "bye" (signals the run loop to

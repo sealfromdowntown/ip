@@ -1,7 +1,9 @@
+import chim.task.TaskList;
+
 import java.util.Scanner;
 
 /**
- * Represents the Chim chatbot: wires together Ui, Storage, TaskList, and
+ * Represents the Chim chatbot: wires together Ui, Storage, chim.task.TaskList, and
  * Parser, and runs the main read-process-respond loop.
  */
 public class Chim {

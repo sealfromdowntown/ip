@@ -1,3 +1,5 @@
+package chim.task;
+
 /**
  * Represents a task that spans a specific start and end date/time.
  */
@@ -7,7 +9,7 @@ public class Event extends Task {
     protected String to;
 
     /**
-     * Creates an Event with the given description, start time, and end time.
+     * Creates an chim.task.Event with the given description, start time, and end time.
      *
      * @param description Description of the event.
      * @param from Start date/time of the event.

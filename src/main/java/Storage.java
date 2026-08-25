@@ -1,3 +1,8 @@
+import chim.task.Deadline;
+import chim.task.Event;
+import chim.task.Task;
+import chim.task.Todo;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,7 +80,7 @@ public class Storage {
     }
 
     /**
-     * Parses a single line from the data file into a Task.
+     * Parses a single line from the data file into a chim.task.Task.
      * Corrupted or unrecognised lines are skipped by returning null.
      *
      * @param rawLine Line read from the data file.

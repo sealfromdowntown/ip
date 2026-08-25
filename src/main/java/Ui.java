@@ -1,3 +1,5 @@
+import chim.task.Task;
+
 import java.util.List;
 
 /**
@@ -53,7 +55,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was added.
      *
-     * @param task Task that was added.
+     * @param task chim.task.Task that was added.
      * @param taskCount Total number of tasks after adding.
      */
     public void showTaskAdded(Task task, int taskCount) {
@@ -67,7 +69,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was deleted.
      *
-     * @param task Task that was removed.
+     * @param task chim.task.Task that was removed.
      * @param taskCount Total number of tasks after removal.
      */
     public void showTaskDeleted(Task task, int taskCount) {
@@ -81,7 +83,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was marked as done.
      *
-     * @param task Task that was marked.
+     * @param task chim.task.Task that was marked.
      */
     public void showTaskMarked(Task task) {
         System.out.println(LINE);
@@ -93,7 +95,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was marked as not done.
      *
-     * @param task Task that was unmarked.
+     * @param task chim.task.Task that was unmarked.
      */
     public void showTaskUnmarked(Task task) {
         System.out.println(LINE);
