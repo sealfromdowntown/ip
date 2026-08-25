@@ -11,14 +11,14 @@ public class TaskList {
     private final ArrayList<Task> tasks;
 
     /**
-     * Creates an empty chim.task.TaskList.
+     * Creates an empty TaskList.
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
     /**
-     * Creates a chim.task.TaskList containing the given tasks, e.g. tasks loaded
+     * Creates a TaskList containing the given tasks, e.g. tasks loaded
      * from disk on startup.
      *
      * @param tasks Initial tasks to populate the list with.
@@ -30,7 +30,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task chim.task.Task to add.
+     * @param task Task to add.
      */
     public void add(Task task) {
         tasks.add(task);

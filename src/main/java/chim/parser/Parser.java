@@ -10,7 +10,7 @@ import java.time.format.DateTimeParseException;
 
 /**
  * Interprets raw user input and carries out the corresponding action
- * on the task list, printing results via the given chim.ui.Ui.
+ * on the task list, printing results via the given Ui.
  */
 public class Parser {
 
@@ -19,9 +19,9 @@ public class Parser {
      * represents.
      *
      * @param input Raw line of input from the user.
-     * @param tasks chim.task.Task list to operate on.
-     * @param ui chim.ui.Ui used to display results.
-     * @param storage chim.storage.Storage used to persist changes to disk.
+     * @param tasks Task list to operate on.
+     * @param ui Ui used to display results.
+     * @param storage Storage used to persist changes to disk.
      * @return false if the command was "bye" (signals the run loop to
      *         stop), true otherwise.
      * @throws ChimException If the input is not a recognised or valid command.
@@ -136,9 +136,19 @@ public class Parser {
             return true;
         }
 
-        throw new ChimException("chim.Chim does not understand what that means :-(");
+        throw new ChimException("Chim does not understand what that means :-(");
     }
 
+    /**
+     * Extracts and validates the task index following a command word,
+     * e.g. the "2" in "delete 2".
+     *
+     * @param input Full raw user input.
+     * @param command Command word the index follows (e.g. "delete").
+     * @param taskCount Current number of tasks, used to validate the index is in range.
+     * @return Zero-based index of the referenced task.
+     * @throws ChimException If no index was given or the index is out of range.
+     */
     private int parseIndex(String input, String command, int taskCount) throws ChimException {
         String numberPart = input.length() > command.length() ? input.substring(command.length()).trim() : "";
 
