@@ -136,7 +136,7 @@ public class Parser {
             return true;
         }
 
-        throw new ChimException("Chim does not understand what that means :-(");
+        throw new ChimException("chim.Chim does not understand what that means :-(");
     }
 
     private int parseIndex(String input, String command, int taskCount) throws ChimException {

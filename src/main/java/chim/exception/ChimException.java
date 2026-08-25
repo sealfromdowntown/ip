@@ -1,8 +1,8 @@
 package chim.exception;
 
 /**
- * Represents an exception specific to Chim, thrown when user input cannot
- * be understood or does not meet Chim's expected command format.
+ * Represents an exception specific to chim.Chim, thrown when user input cannot
+ * be understood or does not meet chim.Chim's expected command format.
  */
 public class ChimException extends Exception {
 

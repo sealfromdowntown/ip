@@ -1,3 +1,5 @@
+package chim;
+
 import chim.exception.ChimException;
 import chim.parser.Parser;
 import chim.storage.Storage;
@@ -7,7 +9,7 @@ import chim.ui.Ui;
 import java.util.Scanner;
 
 /**
- * Represents the Chim chatbot: wires together chim.ui.Ui, chim.storage.Storage, chim.task.TaskList, and
+ * Represents the chim.Chim chatbot: wires together chim.ui.Ui, chim.storage.Storage, chim.task.TaskList, and
  * chim.parser.Parser, and runs the main read-process-respond loop.
  */
 public class Chim {
@@ -18,7 +20,7 @@ public class Chim {
     private final Parser parser;
 
     /**
-     * Creates a Chim chatbot that loads and saves its tasks at the given
+     * Creates a chim.Chim chatbot that loads and saves its tasks at the given
      * file path.
      *
      * @param filePath Relative path to the data file, e.g. "./data/chim.txt".
@@ -56,7 +58,7 @@ public class Chim {
     }
 
     /**
-     * Starts the Chim chatbot.
+     * Starts the chim.Chim chatbot.
      *
      * @param args Command-line arguments (not used).
      */
