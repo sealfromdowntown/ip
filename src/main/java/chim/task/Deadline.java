@@ -1,3 +1,5 @@
+package chim.task;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -9,7 +11,7 @@ public class Deadline extends Task {
     protected LocalDate by;
 
     /**
-     * Creates a Deadline with the given description and due date/time.
+     * Creates a chim.task.Deadline with the given description and due date/time.
      *
      * @param description Description of the deadline task.
      * @param by Date/time the task is due by.

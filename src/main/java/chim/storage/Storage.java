@@ -1,3 +1,10 @@
+package chim.storage;
+
+import chim.task.Deadline;
+import chim.task.Event;
+import chim.task.Task;
+import chim.task.Todo;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +22,7 @@ public class Storage {
     private final Path filePath;
 
     /**
-     * Creates a Storage that reads from and writes to the given file path.
+     * Creates a chim.storage.Storage that reads from and writes to the given file path.
      *
      * @param filePath Relative path to the data file, e.g. "./data/chim.txt".
      */
@@ -75,7 +82,7 @@ public class Storage {
     }
 
     /**
-     * Parses a single line from the data file into a Task.
+     * Parses a single line from the data file into a chim.task.Task.
      * Corrupted or unrecognised lines are skipped by returning null.
      *
      * @param rawLine Line read from the data file.

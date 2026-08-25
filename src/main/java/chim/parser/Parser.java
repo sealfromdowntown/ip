@@ -1,9 +1,16 @@
+package chim.parser;
+
+import chim.exception.ChimException;
+import chim.storage.Storage;
+import chim.task.*;
+import chim.ui.Ui;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 /**
  * Interprets raw user input and carries out the corresponding action
- * on the task list, printing results via the given Ui.
+ * on the task list, printing results via the given chim.ui.Ui.
  */
 public class Parser {
 
@@ -12,9 +19,9 @@ public class Parser {
      * represents.
      *
      * @param input Raw line of input from the user.
-     * @param tasks Task list to operate on.
-     * @param ui Ui used to display results.
-     * @param storage Storage used to persist changes to disk.
+     * @param tasks chim.task.Task list to operate on.
+     * @param ui chim.ui.Ui used to display results.
+     * @param storage chim.storage.Storage used to persist changes to disk.
      * @return false if the command was "bye" (signals the run loop to
      *         stop), true otherwise.
      * @throws ChimException If the input is not a recognised or valid command.
@@ -129,7 +136,7 @@ public class Parser {
             return true;
         }
 
-        throw new ChimException("Chim does not understand what that means :-(");
+        throw new ChimException("chim.Chim does not understand what that means :-(");
     }
 
     private int parseIndex(String input, String command, int taskCount) throws ChimException {
