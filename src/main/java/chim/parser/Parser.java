@@ -139,6 +139,16 @@ public class Parser {
         throw new ChimException("Chim does not understand what that means :-(");
     }
 
+    /**
+     * Extracts and validates the task index following a command word,
+     * e.g. the "2" in "delete 2".
+     *
+     * @param input Full raw user input.
+     * @param command Command word the index follows (e.g. "delete").
+     * @param taskCount Current number of tasks, used to validate the index is in range.
+     * @return Zero-based index of the referenced task.
+     * @throws ChimException If no index was given or the index is out of range.
+     */
     private int parseIndex(String input, String command, int taskCount) throws ChimException {
         String numberPart = input.length() > command.length() ? input.substring(command.length()).trim() : "";
 

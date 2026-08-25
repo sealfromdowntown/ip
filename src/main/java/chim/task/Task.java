@@ -52,10 +52,22 @@ public class Task {
         return getTypeSymbol() + " | " + getStatusDigit() + " | " + description;
     }
 
+    /**
+     * Returns the single-character digit used in the file format to
+     * represent this task's completion status.
+     *
+     * @return "1" if the task is done, "0" otherwise.
+     */
     protected String getStatusDigit() {
         return isDone ? "1" : "0";
     }
 
+    /**
+     * Returns the single-letter symbol used in the file format to
+     * represent this task's type.
+     *
+     * @return "T" for a todo, "D" for a deadline, "E" for an event.
+     */
     protected String getTypeSymbol() {
         switch (type) {
         case TODO:
