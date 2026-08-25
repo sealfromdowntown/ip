@@ -14,6 +14,11 @@ public class Storage {
 
     private final Path filePath;
 
+    /**
+     * Creates a Storage that reads from and writes to the given file path.
+     *
+     * @param filePath Relative path to the data file, e.g. "./data/chim.txt".
+     */
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
     }
@@ -89,17 +94,17 @@ public class Storage {
 
             Task task;
             switch (typeSymbol) {
-                case "T":
-                    task = new Todo(description);
-                    break;
-                case "D":
-                    task = new Deadline(description, LocalDate.parse(parts[3]));
-                    break;
-                case "E":
-                    task = new Event(description, parts[3], parts[4]);
-                    break;
-                default:
-                    return null;
+            case "T":
+                task = new Todo(description);
+                break;
+            case "D":
+                task = new Deadline(description, LocalDate.parse(parts[3]));
+                break;
+            case "E":
+                task = new Event(description, parts[3], parts[4]);
+                break;
+            default:
+                return null;
             }
 
             if (isDone) {

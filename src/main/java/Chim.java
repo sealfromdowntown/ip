@@ -1,55 +1,60 @@
 import java.util.Scanner;
 
 /**
- * Represents a chatbot that manages a list of tasks based on user commands
- * entered via the command line, and persists them to disk between runs.
+ * Represents the Chim chatbot: wires together Ui, Storage, TaskList, and
+ * Parser, and runs the main read-process-respond loop.
  */
 public class Chim {
 
+    private final Storage storage;
+    private final TaskList tasks;
+    private final Ui ui;
+    private final Parser parser;
+
     /**
-     * Runs the Chim chatbot: prints the greeting, loads any saved tasks
-     * from disk, then repeatedly reads and processes user commands until
-     * the user types "bye".
+     * Creates a Chim chatbot that loads and saves its tasks at the given
+     * file path.
+     *
+     * @param filePath Relative path to the data file, e.g. "./data/chim.txt".
+     */
+    public Chim(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        parser = new Parser();
+        tasks = new TaskList(storage.load());
+    }
+
+    /**
+     * Prints the greeting, then repeatedly reads and processes user
+     * commands until the user types "bye".
+     */
+    public void run() {
+        ui.showWelcome();
+        Scanner scanner = new Scanner(System.in);
+        boolean isRunning = true;
+
+        while (isRunning) {
+            String input = scanner.nextLine().trim();
+            try {
+                isRunning = parser.parseAndExecute(input, tasks, ui, storage);
+            } catch (ChimException e) {
+                ui.showError(e.getMessage());
+            } catch (NumberFormatException e) {
+                ui.showError("OOPS!!! Please provide a valid task number.");
+            } catch (ArrayIndexOutOfBoundsException e) {
+                ui.showError("OOPS!!! That task number doesn't exist in your list.");
+            }
+        }
+
+        scanner.close();
+    }
+
+    /**
+     * Starts the Chim chatbot.
      *
      * @param args Command-line arguments (not used).
      */
     public static void main(String[] args) {
-        String logo =
-                "  #####  #     # ###  #     # \n"
-                        + " #     # #     #  #   ##   ## \n"
-                        + " #       #     #  #   # # # # \n"
-                        + " #       #######  #   #  #  # \n"
-                        + " #       #     #  #   #     # \n"
-                        + " #     # #     #  #   #     # \n"
-                        + "  #####  #     # ###  #     # \n";
-
-        Ui ui = new Ui();
-        ui.showWelcome();
-
-        Storage storage = new Storage("./data/chim.txt");
-        TaskList tasks = new TaskList(storage.load());
-        Parser parser = new Parser();
-
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            String input = scanner.nextLine().trim();
-            try {
-                boolean isRunning = parser.parseAndExecute(input, tasks, ui, storage);
-                if (!isRunning) {
-                    break;
-                }
-            } catch (ChimException e) {
-                // Catches all custom Chim-specific errors thrown above
-                ui.showError(e.getMessage());
-            } catch (NumberFormatException e) {
-                // Thrown by Integer.parseInt() if user types something non-numeric
-                // after "mark"/"unmark", e.g. "mark abc"
-                ui.showError("OOPS!!! Please provide a valid task number.");
-            } catch (ArrayIndexOutOfBoundsException e) {
-                // Safety net in case an index slips past manual validation
-                ui.showError("OOPS!!! That task number doesn't exist in your list.");
-            }
-        }
-        scanner.close();
+        new Chim("./data/chim.txt").run();
     }
 }
