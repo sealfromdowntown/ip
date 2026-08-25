@@ -1,3 +1,4 @@
+import chim.exception.ChimException;
 import chim.task.TaskList;
 
 import java.util.Scanner;

@@ -1,3 +1,4 @@
+import chim.exception.ChimException;
 import chim.task.*;
 
 import java.time.LocalDate;
