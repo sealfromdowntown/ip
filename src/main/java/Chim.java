@@ -26,13 +26,8 @@ public class Chim {
                         + " #     # #     #  #   #     # \n"
                         + "  #####  #     # ###  #     # \n";
 
-        String line = "____________________________________________________________";
-
-        System.out.println(line);
-        System.out.println(logo);
-        System.out.println("Hello! I'm Chim.");
-        System.out.println("What can I do for you?");
-        System.out.println(line);
+        Ui ui = new Ui();
+        ui.showWelcome();
 
         Storage storage = new Storage("./data/chim.txt");
         ArrayList<Task> tasks = storage.load();
@@ -42,19 +37,12 @@ public class Chim {
             String input = scanner.nextLine().trim();
             try {
                 if (input.equals("bye")) {
-                    System.out.println(line);
-                    System.out.println("Bye. Hope to see you again soon!");
-                    System.out.println(line);
+                    ui.showGoodbye();
                     break;
                 }
 
                 if (input.equals("list")) {
-                    System.out.println(line);
-                    System.out.println(" Here are the tasks in your list:");
-                    for (int i = 0; i < tasks.size(); i++) {
-                        System.out.println(" " + (i + 1) + "." + tasks.get(i));
-                    }
-                    System.out.println(line);
+                    ui.showTaskList(tasks);
                     continue;
                 }
 
@@ -62,10 +50,7 @@ public class Chim {
                     int index = Integer.parseInt(input.substring(5).trim()) - 1;
                     tasks.get(index).markAsDone();
                     storage.save(tasks);
-                    System.out.println(line);
-                    System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("   " + tasks.get(index));
-                    System.out.println(line);
+                    ui.showTaskMarked(tasks.get(index));
                     continue;
                 }
 
@@ -73,10 +58,7 @@ public class Chim {
                     int index = parseIndex(input, "unmark", tasks.size());
                     tasks.get(index).markAsNotDone();
                     storage.save(tasks);
-                    System.out.println(line);
-                    System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("   " + tasks.get(index));
-                    System.out.println(line);
+                    ui.showTaskUnmarked(tasks.get(index));
                     continue;
                 }
 
@@ -84,11 +66,7 @@ public class Chim {
                     int index = parseIndex(input, "delete", tasks.size());
                     Task removed = tasks.remove(index);
                     storage.save(tasks);
-                    System.out.println(line);
-                    System.out.println(" Noted. I've removed this task:");
-                    System.out.println("   " + removed);
-                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(line);
+                    ui.showTaskDeleted(removed, tasks.size());
                     continue;
                 }
 
@@ -103,7 +81,7 @@ public class Chim {
 
                     tasks.add(new Todo(description));
                     storage.save(tasks);
-                    printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
+                    ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
 
@@ -136,7 +114,7 @@ public class Chim {
 
                     tasks.add(new Deadline(description, byDate));
                     storage.save(tasks);
-                    printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
+                    ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
 
@@ -169,7 +147,7 @@ public class Chim {
                     }
                     tasks.add(new Event(description, from, to));
                     storage.save(tasks);
-                    printAddedMessage(line, tasks.get(tasks.size() - 1), tasks.size());
+                    ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
 
@@ -177,20 +155,14 @@ public class Chim {
 
             } catch (ChimException e) {
                 // Catches all custom Chim-specific errors thrown above
-                System.out.println(line);
-                System.out.println(" " + e.getMessage());
-                System.out.println(line);
+                ui.showError(e.getMessage());
             } catch (NumberFormatException e) {
                 // Thrown by Integer.parseInt() if user types something non-numeric
                 // after "mark"/"unmark", e.g. "mark abc"
-                System.out.println(line);
-                System.out.println(" OOPS!!! Please provide a valid task number.");
-                System.out.println(line);
+                ui.showError(" OOPS!!! Please provide a valid task number.");
             } catch (ArrayIndexOutOfBoundsException e) {
                 // Safety net in case an index slips past manual validation
-                System.out.println(line);
-                System.out.println(" OOPS!!! That task number doesn't exist in your list.");
-                System.out.println(line);
+                ui.showError(" OOPS!!! That task number doesn't exist in your list.");
             }
         }
 
@@ -213,13 +185,5 @@ public class Chim {
         }
 
         return index;
-    }
-
-    private static void printAddedMessage(String line, Task task, int taskCount) {
-        System.out.println(line);
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("   " + task);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
-        System.out.println(line);
     }
 }
