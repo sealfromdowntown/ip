@@ -1,6 +1,5 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -30,7 +29,7 @@ public class Chim {
         ui.showWelcome();
 
         Storage storage = new Storage("./data/chim.txt");
-        ArrayList<Task> tasks = storage.load();
+        TaskList tasks = new TaskList(storage.load());
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -42,14 +41,14 @@ public class Chim {
                 }
 
                 if (input.equals("list")) {
-                    ui.showTaskList(tasks);
+                    ui.showTaskList(tasks.getTasks());
                     continue;
                 }
 
                 if (input.startsWith("mark ")) {
                     int index = Integer.parseInt(input.substring(5).trim()) - 1;
                     tasks.get(index).markAsDone();
-                    storage.save(tasks);
+                    storage.save(tasks.getTasks());
                     ui.showTaskMarked(tasks.get(index));
                     continue;
                 }
@@ -57,15 +56,15 @@ public class Chim {
                 if (input.startsWith("unmark")) {
                     int index = parseIndex(input, "unmark", tasks.size());
                     tasks.get(index).markAsNotDone();
-                    storage.save(tasks);
+                    storage.save(tasks.getTasks());
                     ui.showTaskUnmarked(tasks.get(index));
                     continue;
                 }
 
                 if (input.startsWith("delete")) {
                     int index = parseIndex(input, "delete", tasks.size());
-                    Task removed = tasks.remove(index);
-                    storage.save(tasks);
+                    Task removed = tasks.delete(index);
+                    storage.save(tasks.getTasks());
                     ui.showTaskDeleted(removed, tasks.size());
                     continue;
                 }
@@ -80,7 +79,7 @@ public class Chim {
                     }
 
                     tasks.add(new Todo(description));
-                    storage.save(tasks);
+                    storage.save(tasks.getTasks());
                     ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
@@ -113,7 +112,7 @@ public class Chim {
                     }
 
                     tasks.add(new Deadline(description, byDate));
-                    storage.save(tasks);
+                    storage.save(tasks.getTasks());
                     ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
@@ -146,7 +145,7 @@ public class Chim {
                         throw new ChimException("OOPS!!! Please provide both a start and end time for the event.");
                     }
                     tasks.add(new Event(description, from, to));
-                    storage.save(tasks);
+                    storage.save(tasks.getTasks());
                     ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                     continue;
                 }
