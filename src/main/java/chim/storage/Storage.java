@@ -1,10 +1,5 @@
 package chim.storage;
 
-import chim.task.Deadline;
-import chim.task.Event;
-import chim.task.Task;
-import chim.task.Todo;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +8,11 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import chim.task.Deadline;
+import chim.task.Event;
+import chim.task.Task;
+import chim.task.Todo;
 
 /**
  * Handles loading tasks from, and saving tasks to, the data file on disk.

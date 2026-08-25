@@ -1,8 +1,8 @@
 package chim.ui;
 
-import chim.task.Task;
-
 import java.util.List;
+
+import chim.task.Task;
 
 /**
  * Handles all interactions with the user: printing messages and

@@ -1,12 +1,12 @@
 package chim;
 
+import java.util.Scanner;
+
 import chim.exception.ChimException;
 import chim.parser.Parser;
 import chim.storage.Storage;
 import chim.task.TaskList;
 import chim.ui.Ui;
-
-import java.util.Scanner;
 
 /**
  * Represents the chim.Chim chatbot: wires together chim.ui.Ui, chim.storage.Storage, chim.task.TaskList, and
