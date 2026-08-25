@@ -1,3 +1,5 @@
+package chim.storage;
+
 import chim.task.Deadline;
 import chim.task.Event;
 import chim.task.Task;
@@ -20,7 +22,7 @@ public class Storage {
     private final Path filePath;
 
     /**
-     * Creates a Storage that reads from and writes to the given file path.
+     * Creates a chim.storage.Storage that reads from and writes to the given file path.
      *
      * @param filePath Relative path to the data file, e.g. "./data/chim.txt".
      */
