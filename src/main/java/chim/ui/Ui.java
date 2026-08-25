@@ -13,7 +13,7 @@ public class Ui {
     private static final String LINE = "____________________________________________________________";
 
     /**
-     * Prints the welcome banner and greeting shown when chim.Chim starts up.
+     * Prints the welcome banner and greeting shown when Chim starts up.
      */
     public void showWelcome() {
         String logo =
@@ -26,13 +26,13 @@ public class Ui {
                         + "  #####  #     # ###  #     # \n";
         System.out.println(LINE);
         System.out.println(logo);
-        System.out.println("Hello! I'm chim.Chim.");
+        System.out.println("Hello! I'm Chim.");
         System.out.println("What can I do for you?");
         System.out.println(LINE);
     }
 
     /**
-     * Prints the goodbye message shown when the user exits chim.Chim.
+     * Prints the goodbye message shown when the user exits Chim.
      */
     public void showGoodbye() {
         System.out.println(LINE);
@@ -57,7 +57,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was added.
      *
-     * @param task chim.task.Task that was added.
+     * @param task Task that was added.
      * @param taskCount Total number of tasks after adding.
      */
     public void showTaskAdded(Task task, int taskCount) {
@@ -71,7 +71,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was deleted.
      *
-     * @param task chim.task.Task that was removed.
+     * @param task Task that was removed.
      * @param taskCount Total number of tasks after removal.
      */
     public void showTaskDeleted(Task task, int taskCount) {
@@ -85,7 +85,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was marked as done.
      *
-     * @param task chim.task.Task that was marked.
+     * @param task Task that was marked.
      */
     public void showTaskMarked(Task task) {
         System.out.println(LINE);
@@ -97,7 +97,7 @@ public class Ui {
     /**
      * Prints confirmation that a task was marked as not done.
      *
-     * @param task chim.task.Task that was unmarked.
+     * @param task Task that was unmarked.
      */
     public void showTaskUnmarked(Task task) {
         System.out.println(LINE);
@@ -107,7 +107,7 @@ public class Ui {
     }
 
     /**
-     * Prints an error message in chim.Chim's standard message box.
+     * Prints an error message in Chim's standard message box.
      *
      * @param message Error message to display.
      */

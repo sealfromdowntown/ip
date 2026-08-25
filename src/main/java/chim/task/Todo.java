@@ -7,7 +7,7 @@ package chim.task;
 public class Todo extends Task {
 
     /**
-     * Creates a chim.task.Todo with the given description.
+     * Creates a Todo with the given description.
      *
      * @param description Description of the todo.
      */

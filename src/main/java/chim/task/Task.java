@@ -2,7 +2,7 @@ package chim.task;
 
 /**
  * Represents a task with a description and a completion status.
- * Serves as the base class for chim.task.Todo, chim.task.Deadline, and chim.task.Event.
+ * Serves as the base class for Todo, Deadline, and Event.
  */
 public class Task {
     protected String description;
