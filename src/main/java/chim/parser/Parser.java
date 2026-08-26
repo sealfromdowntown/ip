@@ -2,6 +2,7 @@ package chim.parser;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 import chim.exception.ChimException;
 import chim.storage.Storage;
@@ -38,6 +39,15 @@ public class Parser {
 
         if (input.equals("list")) {
             ui.showTaskList(tasks.getTasks());
+            return true;
+        }
+
+        if (input.startsWith("find")) {
+            String keyword = input.length() > 4 ? input.substring(4).trim() : "";
+            if (keyword.isEmpty()) {
+                throw new ChimException("OOPS!!! Please provide a keyword to search for.");
+            }
+            ui.showMatchingTasks(tasks.find(keyword));
             return true;
         }
 

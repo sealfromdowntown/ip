@@ -55,6 +55,20 @@ public class Ui {
     }
 
     /**
+     * Prints every task that matches a search keyword, numbered from 1.
+     *
+     * @param matchingTasks Tasks that matched the search.
+     */
+    public void showMatchingTasks(List<Task> matchingTasks) {
+        System.out.println(LINE);
+        System.out.println(" Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + matchingTasks.get(i));
+        }
+        System.out.println(LINE);
+    }
+
+    /**
      * Prints confirmation that a task was added.
      *
      * @param task Task that was added.
