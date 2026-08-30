@@ -70,14 +70,14 @@ public class Task {
      */
     protected String getTypeSymbol() {
         switch (type) {
-        case TODO:
-            return "T";
-        case DEADLINE:
-            return "D";
-        case EVENT:
-            return "E";
-        default:
-            return "?";
+            case TODO:
+                return "T";
+            case DEADLINE:
+                return "D";
+            case EVENT:
+                return "E";
+            default:
+                return "?";
         }
     }
 

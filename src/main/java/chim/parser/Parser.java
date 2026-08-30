@@ -2,7 +2,6 @@ package chim.parser;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 
 import chim.exception.ChimException;
 import chim.storage.Storage;
