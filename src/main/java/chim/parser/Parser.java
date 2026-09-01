@@ -14,31 +14,28 @@ import chim.ui.Ui;
 
 /**
  * Interprets raw user input and carries out the corresponding action
- * on the task list, printing results via the given Ui.
+ * on the task list, returning the response message to show the user.
  */
 public class Parser {
 
     /**
-     * Parses a single line of user input and executes the command it
-     * represents.
+     * Parses a single line of user input, executes it, and returns the
+     * message to display to the user.
      *
      * @param input Raw line of input from the user.
-     * @param tasks Task list to operate on.
-     * @param ui Ui used to display results.
+     * @param tasks TaskList to operate on.
+     * @param ui Ui used to format response messages.
      * @param storage Storage used to persist changes to disk.
-     * @return false if the command was "bye" (signals the run loop to
-     *         stop), true otherwise.
+     * @return The response message for this command.
      * @throws ChimException If the input is not a recognised or valid command.
      */
-    public boolean parseAndExecute(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+    public String parseAndExecute(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
         if (input.equals("bye")) {
-            ui.showGoodbye();
-            return false;
+            return ui.getGoodbyeMessage();
         }
 
         if (input.equals("list")) {
-            ui.showTaskList(tasks.getTasks());
-            return true;
+            return ui.getTaskListMessage(tasks.getTasks());
         }
 
         if (input.startsWith("find")) {
@@ -46,32 +43,28 @@ public class Parser {
             if (keyword.isEmpty()) {
                 throw new ChimException("OOPS!!! Please provide a keyword to search for.");
             }
-            ui.showMatchingTasks(tasks.find(keyword));
-            return true;
+            return ui.getMatchingTasksMessage(tasks.find(keyword));
         }
 
         if (input.startsWith("mark ")) {
             int index = Integer.parseInt(input.substring(5).trim()) - 1;
             tasks.get(index).markAsDone();
             storage.save(tasks.getTasks());
-            ui.showTaskMarked(tasks.get(index));
-            return true;
+            return ui.getTaskMarkedMessage(tasks.get(index));
         }
 
         if (input.startsWith("unmark")) {
             int index = parseIndex(input, "unmark", tasks.size());
             tasks.get(index).markAsNotDone();
             storage.save(tasks.getTasks());
-            ui.showTaskUnmarked(tasks.get(index));
-            return true;
+            return ui.getTaskUnmarkedMessage(tasks.get(index));
         }
 
         if (input.startsWith("delete")) {
             int index = parseIndex(input, "delete", tasks.size());
             Task removed = tasks.delete(index);
             storage.save(tasks.getTasks());
-            ui.showTaskDeleted(removed, tasks.size());
-            return true;
+            return ui.getTaskDeletedMessage(removed, tasks.size());
         }
 
         if (input.startsWith("todo")) {
@@ -81,8 +74,7 @@ public class Parser {
             }
             tasks.add(new Todo(description));
             storage.save(tasks.getTasks());
-            ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-            return true;
+            return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
         if (input.startsWith("deadline")) {
@@ -114,8 +106,7 @@ public class Parser {
 
             tasks.add(new Deadline(description, byDate));
             storage.save(tasks.getTasks());
-            ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-            return true;
+            return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
         if (input.startsWith("event")) {
@@ -145,23 +136,12 @@ public class Parser {
 
             tasks.add(new Event(description, from, to));
             storage.save(tasks.getTasks());
-            ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-            return true;
+            return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
         throw new ChimException("Chim does not understand what that means :-(");
     }
 
-    /**
-     * Extracts and validates the task index following a command word,
-     * e.g. the "2" in "delete 2".
-     *
-     * @param input Full raw user input.
-     * @param command Command word the index follows (e.g. "delete").
-     * @param taskCount Current number of tasks, used to validate the index is in range.
-     * @return Zero-based index of the referenced task.
-     * @throws ChimException If no index was given or the index is out of range.
-     */
     private int parseIndex(String input, String command, int taskCount) throws ChimException {
         String numberPart = input.length() > command.length() ? input.substring(command.length()).trim() : "";
 
