@@ -18,3 +18,9 @@
 .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
+
+.dialog-label {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-padding: 8 10 8 10;
+}
