@@ -27,6 +27,7 @@ public class Main extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
+            scene.getStylesheets().add(Main.class.getResource("/css/main.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Chim");
             stage.setMinHeight(220);
