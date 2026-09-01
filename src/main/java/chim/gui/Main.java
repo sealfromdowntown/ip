@@ -5,6 +5,7 @@ import java.io.IOException;
 import chim.Chim;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -30,6 +31,7 @@ public class Main extends Application {
             scene.getStylesheets().add(Main.class.getResource("/css/main.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Chim");
+            stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/icon.png")));
             stage.setMinHeight(220);
             stage.setMinWidth(417);
             fxmlLoader.<MainWindow>getController().setChim(chim);
