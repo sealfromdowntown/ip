@@ -1,0 +1,26 @@
+.root {
+    main-color: rgb(237, 255, 242);
+    -fx-background-color: main-color;
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-size: cover;
+}
+
+.text-field {
+@@ -23,7 +25,10 @@
+    -fx-font-size: 20px;
+}
+
+.scroll-pane,
+.scroll-pane {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.dialog-label {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-padding: 8 10 8 10;
+}

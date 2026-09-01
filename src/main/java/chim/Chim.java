@@ -10,7 +10,8 @@ import chim.ui.Ui;
 
 /**
  * Represents the Chim chatbot: wires together Ui, Storage, TaskList, and
- * Parser, and runs the main read-process-respond loop.
+ * Parser, and supports both a command-line loop and single-response
+ * queries for a GUI.
  */
 public class Chim {
 
@@ -33,24 +34,34 @@ public class Chim {
     }
 
     /**
+     * Creates a Chim chatbot using the default data file path.
+     */
+    public Chim() {
+        this("./data/chim.txt");
+    }
+
+    /**
      * Prints the greeting, then repeatedly reads and processes user
-     * commands until the user types "bye".
+     * commands until the user types "bye" (command-line mode).
      */
     public void run() {
         ui.showWelcome();
         Scanner scanner = new Scanner(System.in);
-        boolean isRunning = true;
 
-        while (isRunning) {
+        while (true) {
             String input = scanner.nextLine().trim();
             try {
-                isRunning = parser.parseAndExecute(input, tasks, ui, storage);
+                String response = parser.parseAndExecute(input, tasks, ui, storage);
+                ui.printMessage(response);
+                if (input.equals("bye")) {
+                    break;
+                }
             } catch (ChimException e) {
-                ui.showError(e.getMessage());
+                ui.printMessage(e.getMessage());
             } catch (NumberFormatException e) {
-                ui.showError("OOPS!!! Please provide a valid task number.");
+                ui.printMessage("OOPS!!! Please provide a valid task number.");
             } catch (ArrayIndexOutOfBoundsException e) {
-                ui.showError("OOPS!!! That task number doesn't exist in your list.");
+                ui.printMessage("OOPS!!! That task number doesn't exist in your list.");
             }
         }
 
@@ -58,7 +69,35 @@ public class Chim {
     }
 
     /**
-     * Starts the Chim chatbot.
+     * Generates a response for the user's chat message (GUI mode).
+     *
+     * @param input Raw user input.
+     * @return Chim's reply, or an error message if the input is invalid.
+     */
+    public String getResponse(String input) {
+        try {
+            return parser.parseAndExecute(input, tasks, ui, storage);
+        } catch (ChimException e) {
+            return e.getMessage();
+        } catch (NumberFormatException e) {
+            return "OOPS!!! Please provide a valid task number.";
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return "OOPS!!! That task number doesn't exist in your list.";
+        }
+    }
+
+    /**
+     * Returns whether the given input is the exit command.
+     *
+     * @param input Raw user input.
+     * @return true if the input is "bye".
+     */
+    public boolean isExit(String input) {
+        return input.equals("bye");
+    }
+
+    /**
+     * Starts the Chim chatbot in command-line mode.
      *
      * @param args Command-line arguments (not used).
      */
