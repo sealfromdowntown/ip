@@ -5,3 +5,5 @@ D | 0 | return book | 2019-06-06
 E | 0 | project meeting | 2pm | 4pm
 T | 0 | book
 T | 0 | read
+T | 0 | buy
+T | 0 | fin hw
