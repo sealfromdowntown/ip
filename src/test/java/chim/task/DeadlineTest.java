@@ -11,14 +11,14 @@ public class DeadlineTest {
     @Test
     public void toFileFormat_notDone_correctFormat() {
         Deadline deadline = new Deadline("return book", LocalDate.of(2019, 12, 1));
-        assertEquals("D | 0 | return book | 2019-12-01", deadline.toFileFormat());
+        assertEquals("D | 0 | none | return book | 2019-12-01", deadline.toFileFormat());
     }
 
     @Test
     public void toFileFormat_markedDone_correctFormat() {
         Deadline deadline = new Deadline("return book", LocalDate.of(2019, 12, 1));
         deadline.markAsDone();
-        assertEquals("D | 1 | return book | 2019-12-01", deadline.toFileFormat());
+        assertEquals("D | 1 | none | return book | 2019-12-01", deadline.toFileFormat());
     }
 
     @Test

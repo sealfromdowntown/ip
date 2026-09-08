@@ -8,6 +8,7 @@ public class Task {
     protected String description;
     protected boolean isDone;
     protected TaskType type;
+    protected String priority;
 
     /**
      * Creates a task with the given description and type. The task is
@@ -23,6 +24,7 @@ public class Task {
         this.description = description;
         this.isDone = false;
         this.type = type;
+        this.priority = "none";
     }
 
     public String getStatusIcon() {
@@ -45,6 +47,14 @@ public class Task {
         return type;
     }
 
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
     /**
      * Returns this task formatted as a single line for saving to disk.
      * Subclasses append any extra fields they need (e.g. by/from/to).
@@ -52,7 +62,7 @@ public class Task {
      * @return Pipe-delimited representation of this task.
      */
     public String toFileFormat() {
-        return getTypeSymbol() + " | " + getStatusDigit() + " | " + description;
+        return getTypeSymbol() + " | " + getStatusDigit() + " | " + priority + " | " + description;
     }
 
     /**
@@ -84,8 +94,15 @@ public class Task {
         }
     }
 
+    private String getPriorityLabel() {
+        if (priority.equals("none")) {
+            return "";
+        }
+        return "[P:" + priority + "]";
+    }
+
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + getStatusIcon() + "]" + getPriorityLabel() + " " + description;
     }
 }

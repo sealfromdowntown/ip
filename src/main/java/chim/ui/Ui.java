@@ -127,6 +127,19 @@ public class Ui {
         );
     }
 
+    /**
+     * Returns confirmation that a task's priority was changed.
+     *
+     * @param task Task whose priority was changed.
+     * @return Formatted priority-changed message.
+     */
+    public String getTaskPriorityMessage(Task task) {
+        return joinLines(
+                " Got it. I've updated the priority of this task:",
+                "   " + task
+        );
+    }
+
     private String joinLines(String... lines) {
         return String.join("\n", lines);
     }

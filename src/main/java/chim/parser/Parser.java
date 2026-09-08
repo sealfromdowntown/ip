@@ -27,6 +27,7 @@ public class Parser {
     private static final String COMMAND_TODO = "todo";
     private static final String COMMAND_DEADLINE = "deadline";
     private static final String COMMAND_EVENT = "event";
+    private static final String COMMAND_PRIORITY = "priority";
 
     private static final String DEADLINE_SEPARATOR = "/by";
     private static final String EVENT_FROM_SEPARATOR = "/from";
@@ -83,6 +84,30 @@ public class Parser {
             Task removed = tasks.delete(index);
             storage.save(tasks.getTasks());
             return ui.getTaskDeletedMessage(removed, tasks.size());
+        }
+
+        if (input.startsWith(COMMAND_PRIORITY)) {
+            String rest = input.length() > COMMAND_PRIORITY.length()
+                    ? input.substring(COMMAND_PRIORITY.length()).trim()
+                    : "";
+
+            String[] parts = rest.split(" ", 2);
+            if (parts.length < 2) {
+                throw new ChimException("OOPS!!! Please provide a task number and priority.");
+            }
+
+            int index = parseIndex(COMMAND_PRIORITY + " " + parts[0], COMMAND_PRIORITY, tasks.size());
+            String priority = parts[1].trim().toLowerCase();
+
+            if (!priority.equals("high") && !priority.equals("medium")
+                    && !priority.equals("low") && !priority.equals("none")) {
+                throw new ChimException("OOPS!!! Priority must be high, medium, low, or none.");
+            }
+
+            Task task = tasks.get(index);
+            task.setPriority(priority);
+            storage.save(tasks.getTasks());
+            return ui.getTaskPriorityMessage(task);
         }
 
         if (input.startsWith(COMMAND_TODO)) {

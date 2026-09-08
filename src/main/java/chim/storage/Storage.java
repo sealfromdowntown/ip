@@ -97,7 +97,8 @@ public class Storage {
 
             String typeSymbol = parts[0];
             boolean isDone = parts[1].equals("1");
-            String description = parts[2];
+            String priority = parts[2];
+            String description = parts[3];
 
             Task task;
             switch (typeSymbol) {
@@ -105,14 +106,15 @@ public class Storage {
                     task = new Todo(description);
                     break;
                 case "D":
-                    task = new Deadline(description, LocalDate.parse(parts[3]));
+                    task = new Deadline(description, LocalDate.parse(parts[4]));
                     break;
                 case "E":
-                    task = new Event(description, parts[3], parts[4]);
+                    task = new Event(description, parts[4], parts[5]);
                     break;
                 default:
                     return null;
             }
+            task.setPriority(priority);
 
             if (isDone) {
                 task.markAsDone();
