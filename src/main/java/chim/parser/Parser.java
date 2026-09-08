@@ -18,6 +18,20 @@ import chim.ui.Ui;
  */
 public class Parser {
 
+    private static final String COMMAND_BYE = "bye";
+    private static final String COMMAND_LIST = "list";
+    private static final String COMMAND_FIND = "find";
+    private static final String COMMAND_MARK = "mark";
+    private static final String COMMAND_UNMARK = "unmark";
+    private static final String COMMAND_DELETE = "delete";
+    private static final String COMMAND_TODO = "todo";
+    private static final String COMMAND_DEADLINE = "deadline";
+    private static final String COMMAND_EVENT = "event";
+
+    private static final String DEADLINE_SEPARATOR = "/by";
+    private static final String EVENT_FROM_SEPARATOR = "/from";
+    private static final String EVENT_TO_SEPARATOR = "/to";
+
     /**
      * Parses a single line of user input, executes it, and returns the
      * message to display to the user.
@@ -30,45 +44,51 @@ public class Parser {
      * @throws ChimException If the input is not a recognised or valid command.
      */
     public String parseAndExecute(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
-        if (input.equals("bye")) {
+        if (input.equals(COMMAND_BYE)) {
             return ui.getGoodbyeMessage();
         }
 
-        if (input.equals("list")) {
+        if (input.equals(COMMAND_LIST)) {
             return ui.getTaskListMessage(tasks.getTasks());
         }
 
-        if (input.startsWith("find")) {
-            String keyword = input.length() > 4 ? input.substring(4).trim() : "";
+        if (input.startsWith(COMMAND_FIND)) {
+            String keyword = input.length() > COMMAND_FIND.length()
+                    ? input.substring(COMMAND_FIND.length()).trim()
+                    : "";
             if (keyword.isEmpty()) {
                 throw new ChimException("OOPS!!! Please provide a keyword to search for.");
             }
             return ui.getMatchingTasksMessage(tasks.find(keyword));
         }
 
-        if (input.startsWith("mark ")) {
-            int index = Integer.parseInt(input.substring(5).trim()) - 1;
-            tasks.get(index).markAsDone();
+        if (input.startsWith(COMMAND_MARK)) {
+            int index = parseIndex(input, COMMAND_MARK, tasks.size());
+            Task task = tasks.get(index);
+            task.markAsDone();
             storage.save(tasks.getTasks());
-            return ui.getTaskMarkedMessage(tasks.get(index));
+            return ui.getTaskMarkedMessage(task);
         }
 
-        if (input.startsWith("unmark")) {
-            int index = parseIndex(input, "unmark", tasks.size());
-            tasks.get(index).markAsNotDone();
+        if (input.startsWith(COMMAND_UNMARK)) {
+            int index = parseIndex(input, COMMAND_UNMARK, tasks.size());
+            Task task = tasks.get(index);
+            task.markAsNotDone();
             storage.save(tasks.getTasks());
-            return ui.getTaskUnmarkedMessage(tasks.get(index));
+            return ui.getTaskUnmarkedMessage(task);
         }
 
-        if (input.startsWith("delete")) {
-            int index = parseIndex(input, "delete", tasks.size());
+        if (input.startsWith(COMMAND_DELETE)) {
+            int index = parseIndex(input, COMMAND_DELETE, tasks.size());
             Task removed = tasks.delete(index);
             storage.save(tasks.getTasks());
             return ui.getTaskDeletedMessage(removed, tasks.size());
         }
 
-        if (input.startsWith("todo")) {
-            String description = input.length() > 4 ? input.substring(4).trim() : "";
+        if (input.startsWith(COMMAND_TODO)) {
+            String description = input.length() > COMMAND_TODO.length()
+                    ? input.substring(COMMAND_TODO.length()).trim()
+                    : "";
             if (description.isEmpty()) {
                 throw new ChimException("OOPS!!! The description of a todo cannot be empty.");
             }
@@ -77,16 +97,18 @@ public class Parser {
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
-        if (input.startsWith("deadline")) {
-            String rest = input.length() > 8 ? input.substring(8).trim() : "";
+        if (input.startsWith(COMMAND_DEADLINE)) {
+            String rest = input.length() > COMMAND_DEADLINE.length()
+                    ? input.substring(COMMAND_DEADLINE.length()).trim()
+                    : "";
             if (rest.isEmpty()) {
                 throw new ChimException("OOPS!!! The description of a deadline cannot be empty.");
             }
-            if (!rest.contains("/by")) {
+            if (!rest.contains(DEADLINE_SEPARATOR)) {
                 throw new ChimException("OOPS!!! A deadline needs a '/by' with the due date/time.");
             }
 
-            String[] parts = rest.split("/by", 2);
+            String[] parts = rest.split(DEADLINE_SEPARATOR, 2);
             String description = parts[0].trim();
             String by = parts[1].trim();
 
@@ -109,8 +131,10 @@ public class Parser {
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
-        if (input.startsWith("event")) {
-            String rest = input.length() > 5 ? input.substring(5).trim() : "";
+        if (input.startsWith(COMMAND_EVENT)) {
+            String rest = input.length() > COMMAND_EVENT.length()
+                    ? input.substring(COMMAND_EVENT.length()).trim()
+                    : "";
 
             if (rest.isEmpty()) {
                 throw new ChimException("OOPS!!! The description of an event cannot be empty.");
