@@ -155,6 +155,8 @@ public class Parser {
             throw new ChimException("OOPS!!! That task number doesn't exist in your list.");
         }
 
+        assert index >= 0 && index < taskCount : "Parsed index should be within task list bounds";
+
         return index;
     }
 }
