@@ -115,8 +115,9 @@ public class Parser {
                     ? input.substring(COMMAND_TODO.length()).trim()
                     : "";
             if (description.isEmpty()) {
-                throw new ChimException("A TODO needs a description! What's happening?");
+                throw new ChimException("A todo needs a description! What should I add?");
             }
+            checkNoPipeCharacter(description);
             tasks.add(new Todo(description));
             storage.save(tasks.getTasks());
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
@@ -144,8 +145,9 @@ public class Parser {
                 throw new ChimException("An event needs a description! What's happening?");
             }
             if (by.isEmpty()) {
-                throw new ChimException("OOPS!!! Please tell me when the deadline is due.");
+                throw new ChimException("When's this deadline due? Add a date after '/by'!");
             }
+            checkNoPipeCharacter(description);
 
             LocalDate byDate;
             try {
@@ -186,8 +188,11 @@ public class Parser {
                 throw new ChimException("An event needs a description! What's happening?");
             }
             if (from.isEmpty() || to.isEmpty()) {
-                throw new ChimException("OOPS!!! Please provide both a start and end time for the event.");
+                throw new ChimException("I need both a start and end time for that event!");
             }
+            checkNoPipeCharacter(description);
+            checkNoPipeCharacter(from);
+            checkNoPipeCharacter(to);
 
             tasks.add(new Event(description, from, to));
             storage.save(tasks.getTasks());
@@ -243,5 +248,18 @@ public class Parser {
             index += target.length();
         }
         return count;
+    }
+
+    /**
+     * Throws an exception if the given text contains the '|' character,
+     * since it is reserved as the delimiter in the saved data file.
+     *
+     * @param text Text to validate.
+     * @throws ChimException If the text contains a '|' character.
+     */
+    private void checkNoPipeCharacter(String text) throws ChimException {
+        if (text.contains("|")) {
+            throw new ChimException("Oops, please avoid using the '|' character — I use it to save your tasks!");
+        }
     }
 }
