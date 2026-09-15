@@ -20,6 +20,7 @@ import chim.task.Todo;
 public class Storage {
 
     private final Path filePath;
+    private int skippedLineCount;
 
     /**
      * Creates a Storage that reads from and writes to the given file path.
@@ -38,6 +39,7 @@ public class Storage {
      */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
+        skippedLineCount = 0;
 
         if (!Files.exists(filePath)) {
             return tasks;
@@ -49,6 +51,8 @@ public class Storage {
                 Task task = parseLine(rawLine);
                 if (task != null) {
                     tasks.add(task);
+                } else if (!rawLine.trim().isEmpty()) {
+                    skippedLineCount++;
                 }
             }
         } catch (IOException e) {
@@ -56,6 +60,16 @@ public class Storage {
         }
 
         return tasks;
+    }
+
+    /**
+     * Returns how many lines were skipped due to being corrupted or
+     * unrecognisable during the most recent load.
+     *
+     * @return Number of skipped lines.
+     */
+    public int getSkippedLineCount() {
+        return skippedLineCount;
     }
 
     /**
