@@ -26,8 +26,8 @@ public class Ui {
                         + "  #####  #     # ###  #     # \n";
         System.out.println(LINE);
         System.out.println(logo);
-        System.out.println("Hello! I'm Chim.");
-        System.out.println("What can I do for you?");
+        System.out.println("Ooh ooh ah ah! I'm Chim! \uD83D\uDC12");
+        System.out.println("Swing on by and tell me what you need!");
         System.out.println(LINE);
     }
 
@@ -48,7 +48,7 @@ public class Ui {
      * @return Goodbye message.
      */
     public String getGoodbyeMessage() {
-        return "Bye. Hope to see you again soon!";
+        return "Bye bye! \uD83D\uDC12 Swing back anytime!";
     }
 
     /**
@@ -58,7 +58,10 @@ public class Ui {
      * @return Formatted task list message.
      */
     public String getTaskListMessage(List<Task> tasks) {
-        return formatTaskList(" Here are the tasks in your list:", tasks);
+        if (tasks.isEmpty()) {
+            return " Your list is empty! Nothing to swing on yet.";
+        }
+        return formatTaskList(" Here's everything on your vine:", tasks);
     }
 
     /**
@@ -68,7 +71,10 @@ public class Ui {
      * @return Formatted matching-tasks message.
      */
     public String getMatchingTasksMessage(List<Task> matchingTasks) {
-        return formatTaskList(" Here are the matching tasks in your list:", matchingTasks);
+        if (matchingTasks.isEmpty()) {
+            return " Hmm, I couldn't find anything matching that. Try another word?";
+        }
+        return formatTaskList(" I found these for you:", matchingTasks);
     }
 
     /**
@@ -79,11 +85,9 @@ public class Ui {
      * @return Formatted task-added message.
      */
     public String getTaskAddedMessage(Task task, int taskCount) {
-        return joinLines(
-                " Got it. I've added this task:",
-                "   " + task,
-                " Now you have " + taskCount + " tasks in the list."
-        );
+        return " Got it! Adding that to the pile:\n"
+                + "   " + task + "\n"
+                + " You've got " + taskCount + " " + (taskCount == 1 ? "task" : "tasks") + " to swing through now!";
     }
 
     /**
@@ -94,11 +98,9 @@ public class Ui {
      * @return Formatted task-deleted message.
      */
     public String getTaskDeletedMessage(Task task, int taskCount) {
-        return joinLines(
-                " Noted. I've removed this task:",
-                "   " + task,
-                " Now you have " + taskCount + " tasks in the list."
-        );
+        return " Poof! Tossed that one away:\n"
+                + "   " + task + "\n"
+                + " " + taskCount + " " + (taskCount == 1 ? "task" : "tasks") + " left on your vine.";
     }
 
     /**
@@ -108,10 +110,8 @@ public class Ui {
      * @return Formatted task-marked message.
      */
     public String getTaskMarkedMessage(Task task) {
-        return joinLines(
-                " Nice! I've marked this task as done:",
-                "   " + task
-        );
+        return " Woohoo, nice work! Marked as done:\n"
+                + "   " + task;
     }
 
     /**
@@ -121,10 +121,8 @@ public class Ui {
      * @return Formatted task-unmarked message.
      */
     public String getTaskUnmarkedMessage(Task task) {
-        return joinLines(
-                " OK, I've marked this task as not done yet:",
-                "   " + task
-        );
+        return " No worries, marked as not done yet:\n"
+                + "   " + task;
     }
 
     /**
