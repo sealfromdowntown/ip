@@ -1,5 +1,5 @@
 .label {
-    -fx-background-color: #4a6fe3;
+    -fx-background-color: #b5651d;
     -fx-text-fill: white;
     -fx-background-radius: 16 16 4 16;
     -fx-padding: 10 14 10 14;
@@ -7,8 +7,8 @@
 }
 
 .reply-label {
-    -fx-background-color: #e8eaf0;
-    -fx-text-fill: #222222;
+    -fx-background-color: #f1e4d0;
+    -fx-text-fill: #4a3520;
     -fx-background-radius: 16 16 16 4;
 }
 

@@ -130,7 +130,7 @@ public class Parser {
                 throw new ChimException("A deadline needs a description! What's happening?");
             }
             if (!rest.contains(DEADLINE_SEPARATOR)) {
-                throw new ChimException("Don't forget the '/by' and a due date for your deadline!"");
+                throw new ChimException("Don't forget the '/by' and a due date for your deadline!");
             }
 
             String[] parts = rest.split(DEADLINE_SEPARATOR, 2);
