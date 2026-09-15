@@ -193,6 +193,7 @@ public class Parser {
             checkNoPipeCharacter(description);
             checkNoPipeCharacter(from);
             checkNoPipeCharacter(to);
+            checkEventDateOrder(from, to);
 
             tasks.add(new Event(description, from, to));
             storage.save(tasks.getTasks());
@@ -260,6 +261,27 @@ public class Parser {
     private void checkNoPipeCharacter(String text) throws ChimException {
         if (text.contains("|")) {
             throw new ChimException("Oops, please avoid using the '|' character — I use it to save your tasks!");
+        }
+    }
+
+    /**
+     * Checks that an event's start is before its end, but only when both
+     * values are parseable as ISO dates. Free-text times (e.g. "2pm") are
+     * left unvalidated.
+     *
+     * @param from Event start text.
+     * @param to Event end text.
+     * @throws ChimException If both are valid dates and start is not before end.
+     */
+    private void checkEventDateOrder(String from, String to) throws ChimException {
+        try {
+            LocalDate fromDate = LocalDate.parse(from);
+            LocalDate toDate = LocalDate.parse(to);
+            if (!fromDate.isBefore(toDate)) {
+                throw new ChimException("The event's start date should be before its end date!");
+            }
+        } catch (DateTimeParseException e) {
+            // Not both parseable as dates; skip the ordering check.
         }
     }
 }
