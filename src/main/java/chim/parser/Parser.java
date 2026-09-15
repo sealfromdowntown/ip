@@ -137,7 +137,7 @@ public class Parser {
             if (!rest.contains(DEADLINE_SEPARATOR)) {
                 throw new ChimException("Don't forget the '/by' and a due date for your deadline!");
             }
-            if (countOccurrences(rest, "/by") > 1) {
+            if (countOccurrences(rest, DEADLINE_SEPARATOR) > 1) {
                 throw new ChimException("Whoops, I see more than one '/by'! Please use it just once.");
             }
 
@@ -146,7 +146,7 @@ public class Parser {
             String by = parts[1].trim();
 
             if (description.isEmpty()) {
-                throw new ChimException("An event needs a description! What's happening?");
+                throw new ChimException("A deadline needs a description! What's happening?");
             }
             if (by.isEmpty()) {
                 throw new ChimException("When's this deadline due? Add a date after '/by'!");
@@ -180,7 +180,7 @@ public class Parser {
             if (!rest.contains(EVENT_FROM_SEPARATOR) || !rest.contains(EVENT_TO_SEPARATOR)) {
                 throw new ChimException("OOPS!!! An event needs both '/from' and '/to' times.");
             }
-            if (countOccurrences(rest, "/from") > 1 || countOccurrences(rest, "/to") > 1) {
+            if (countOccurrences(rest, EVENT_FROM_SEPARATOR) > 1 || countOccurrences(rest, EVENT_TO_SEPARATOR) > 1) {
                 throw new ChimException("Whoops, I see '/from' or '/to' more than once! Please use each just once.");
             }
 
