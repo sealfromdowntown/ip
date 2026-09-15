@@ -53,7 +53,7 @@ public class Parser {
             return ui.getTaskListMessage(tasks.getTasks());
         }
 
-        if (input.startsWith(COMMAND_FIND)) {
+        if (matchesCommand(input, COMMAND_FIND)) {
             String keyword = input.length() > COMMAND_FIND.length()
                     ? input.substring(COMMAND_FIND.length()).trim()
                     : "";
@@ -63,7 +63,7 @@ public class Parser {
             return ui.getMatchingTasksMessage(tasks.find(keyword));
         }
 
-        if (input.startsWith(COMMAND_MARK)) {
+        if (matchesCommand(input, COMMAND_MARK)) {
             int index = parseIndex(input, COMMAND_MARK, tasks.size());
             Task task = tasks.get(index);
             task.markAsDone();
@@ -71,7 +71,7 @@ public class Parser {
             return ui.getTaskMarkedMessage(task);
         }
 
-        if (input.startsWith(COMMAND_UNMARK)) {
+        if (matchesCommand(input, COMMAND_UNMARK)) {
             int index = parseIndex(input, COMMAND_UNMARK, tasks.size());
             Task task = tasks.get(index);
             task.markAsNotDone();
@@ -79,14 +79,14 @@ public class Parser {
             return ui.getTaskUnmarkedMessage(task);
         }
 
-        if (input.startsWith(COMMAND_DELETE)) {
+        if (matchesCommand(input, COMMAND_DELETE)) {
             int index = parseIndex(input, COMMAND_DELETE, tasks.size());
             Task removed = tasks.delete(index);
             storage.save(tasks.getTasks());
             return ui.getTaskDeletedMessage(removed, tasks.size());
         }
 
-        if (input.startsWith(COMMAND_PRIORITY)) {
+        if (matchesCommand(input, COMMAND_PRIORITY)) {
             String rest = input.length() > COMMAND_PRIORITY.length()
                     ? input.substring(COMMAND_PRIORITY.length()).trim()
                     : "";
@@ -110,19 +110,24 @@ public class Parser {
             return ui.getTaskPriorityMessage(task);
         }
 
-        if (input.startsWith(COMMAND_TODO)) {
+        if (matchesCommand(input, COMMAND_TODO)) {
             String description = input.length() > COMMAND_TODO.length()
                     ? input.substring(COMMAND_TODO.length()).trim()
                     : "";
             if (description.isEmpty()) {
-                throw new ChimException("A TODO needs a description! What's happening?");
+                throw new ChimException("A todo needs a description! What should I add?");
             }
-            tasks.add(new Todo(description));
+            checkNoPipeCharacter(description);
+            Todo newTodo = new Todo(description);
+            if (tasks.isDuplicate(newTodo)) {
+                throw new ChimException("Looks like that todo is already on your list!");
+            }
+            tasks.add(newTodo);
             storage.save(tasks.getTasks());
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
-        if (input.startsWith(COMMAND_DEADLINE)) {
+        if (matchesCommand(input, COMMAND_DEADLINE)) {
             String rest = input.length() > COMMAND_DEADLINE.length()
                     ? input.substring(COMMAND_DEADLINE.length()).trim()
                     : "";
@@ -132,17 +137,21 @@ public class Parser {
             if (!rest.contains(DEADLINE_SEPARATOR)) {
                 throw new ChimException("Don't forget the '/by' and a due date for your deadline!");
             }
+            if (countOccurrences(rest, DEADLINE_SEPARATOR) > 1) {
+                throw new ChimException("Whoops, I see more than one '/by'! Please use it just once.");
+            }
 
             String[] parts = rest.split(DEADLINE_SEPARATOR, 2);
             String description = parts[0].trim();
             String by = parts[1].trim();
 
             if (description.isEmpty()) {
-                throw new ChimException("An event needs a description! What's happening?");
+                throw new ChimException("A deadline needs a description! What's happening?");
             }
             if (by.isEmpty()) {
-                throw new ChimException("OOPS!!! Please tell me when the deadline is due.");
+                throw new ChimException("When's this deadline due? Add a date after '/by'!");
             }
+            checkNoPipeCharacter(description);
 
             LocalDate byDate;
             try {
@@ -151,12 +160,16 @@ public class Parser {
                 throw new ChimException("OOPS!!! Please give the date in yyyy-mm-dd format, e.g. 2019-10-15.");
             }
 
-            tasks.add(new Deadline(description, byDate));
+            Deadline newDeadline = new Deadline(description, byDate);
+            if (tasks.isDuplicate(newDeadline)) {
+                throw new ChimException("Looks like that deadline is already on your list!");
+            }
+            tasks.add(newDeadline);
             storage.save(tasks.getTasks());
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
-        if (input.startsWith(COMMAND_EVENT)) {
+        if (matchesCommand(input, COMMAND_EVENT)) {
             String rest = input.length() > COMMAND_EVENT.length()
                     ? input.substring(COMMAND_EVENT.length()).trim()
                     : "";
@@ -164,15 +177,18 @@ public class Parser {
             if (rest.isEmpty()) {
                 throw new ChimException("An event needs a description! What's happening?");
             }
-            if (!rest.contains("/from") || !rest.contains("/to")) {
+            if (!rest.contains(EVENT_FROM_SEPARATOR) || !rest.contains(EVENT_TO_SEPARATOR)) {
                 throw new ChimException("OOPS!!! An event needs both '/from' and '/to' times.");
             }
+            if (countOccurrences(rest, EVENT_FROM_SEPARATOR) > 1 || countOccurrences(rest, EVENT_TO_SEPARATOR) > 1) {
+                throw new ChimException("Whoops, I see '/from' or '/to' more than once! Please use each just once.");
+            }
 
-            String[] fromSplit = rest.split("/from", 2);
+            String[] fromSplit = rest.split(EVENT_FROM_SEPARATOR, 2);
             String description = fromSplit[0].trim();
             String remainder = fromSplit[1].trim();
 
-            String[] toSplit = remainder.split("/to", 2);
+            String[] toSplit = remainder.split(EVENT_TO_SEPARATOR, 2);
             String from = toSplit[0].trim();
             String to = toSplit.length > 1 ? toSplit[1].trim() : "";
 
@@ -180,10 +196,18 @@ public class Parser {
                 throw new ChimException("An event needs a description! What's happening?");
             }
             if (from.isEmpty() || to.isEmpty()) {
-                throw new ChimException("OOPS!!! Please provide both a start and end time for the event.");
+                throw new ChimException("I need both a start and end time for that event!");
             }
+            checkNoPipeCharacter(description);
+            checkNoPipeCharacter(from);
+            checkNoPipeCharacter(to);
+            checkEventDateOrder(from, to);
 
-            tasks.add(new Event(description, from, to));
+            Event newEvent = new Event(description, from, to);
+            if (tasks.isDuplicate(newEvent)) {
+                throw new ChimException("Looks like that event is already on your list!");
+            }
+            tasks.add(newEvent);
             storage.save(tasks.getTasks());
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
@@ -207,5 +231,69 @@ public class Parser {
         assert index >= 0 && index < taskCount : "Parsed index should be within task list bounds";
 
         return index;
+    }
+
+    /**
+     * Returns whether the input is exactly the given command word, or
+     * starts with that command word followed by a space (i.e. a genuine
+     * word match, not just a shared prefix like "todoodle" matching "todo").
+     *
+     * @param input Raw user input.
+     * @param command Command word to check for.
+     * @return true if input is a real match for the command word.
+     */
+    private boolean matchesCommand(String input, String command) {
+        return input.equals(command) || input.startsWith(command + " ");
+    }
+
+    /**
+     * Counts how many times a substring occurs within a string.
+     *
+     * @param text Text to search within.
+     * @param target Substring to count occurrences of.
+     * @return Number of occurrences.
+     */
+    private int countOccurrences(String text, String target) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(target, index)) != -1) {
+            count++;
+            index += target.length();
+        }
+        return count;
+    }
+
+    /**
+     * Throws an exception if the given text contains the '|' character,
+     * since it is reserved as the delimiter in the saved data file.
+     *
+     * @param text Text to validate.
+     * @throws ChimException If the text contains a '|' character.
+     */
+    private void checkNoPipeCharacter(String text) throws ChimException {
+        if (text.contains("|")) {
+            throw new ChimException("Oops, please avoid using the '|' character — I use it to save your tasks!");
+        }
+    }
+
+    /**
+     * Checks that an event's start is before its end, but only when both
+     * values are parseable as ISO dates. Free-text times (e.g. "2pm") are
+     * left unvalidated.
+     *
+     * @param from Event start text.
+     * @param to Event end text.
+     * @throws ChimException If both are valid dates and start is not before end.
+     */
+    private void checkEventDateOrder(String from, String to) throws ChimException {
+        try {
+            LocalDate fromDate = LocalDate.parse(from);
+            LocalDate toDate = LocalDate.parse(to);
+            if (!fromDate.isBefore(toDate)) {
+                throw new ChimException("The event's start date should be before its end date!");
+            }
+        } catch (DateTimeParseException e) {
+            // Not both parseable as dates; skip the ordering check.
+        }
     }
 }

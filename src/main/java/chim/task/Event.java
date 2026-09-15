@@ -27,6 +27,11 @@ public class Event extends Task {
     }
 
     @Override
+    protected String getDetailsKey() {
+        return super.getDetailsKey() + "|" + from + "|" + to;
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }

@@ -60,7 +60,7 @@ public class DialogBox extends HBox {
         return new DialogBox(text, img);
     }
 
-        /**
+    /**
      * Creates a dialog box for a message from Chim, flipped to the left.
      * Applies an error style if the message represents an error response.
      *

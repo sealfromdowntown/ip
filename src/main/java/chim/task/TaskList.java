@@ -74,6 +74,22 @@ public class TaskList {
     }
 
     /**
+     * Returns whether a task with the same details as the given task
+     * already exists in the list.
+     *
+     * @param candidate Task to check for duplication.
+     * @return true if an identical task already exists.
+     */
+    public boolean isDuplicate(Task candidate) {
+        for (Task task : tasks) {
+            if (task.getDetailsKey().equals(candidate.getDetailsKey())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns the tasks whose description contains the given keyword,
      * ignoring case.
      *
