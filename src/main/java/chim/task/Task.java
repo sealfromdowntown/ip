@@ -94,6 +94,16 @@ public class Task {
         }
     }
 
+    /**
+     * Returns a key uniquely identifying this task's content, used to
+     * detect duplicate tasks. Subclasses append their extra fields.
+     *
+     * @return A string combining the task's type and description.
+     */
+    protected String getDetailsKey() {
+        return getTypeSymbol() + "|" + description;
+    }
+
     private String getPriorityLabel() {
         if (priority.equals("none")) {
             return "";

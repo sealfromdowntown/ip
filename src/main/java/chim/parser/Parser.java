@@ -118,7 +118,11 @@ public class Parser {
                 throw new ChimException("A todo needs a description! What should I add?");
             }
             checkNoPipeCharacter(description);
-            tasks.add(new Todo(description));
+            Todo newTodo = new Todo(description);
+            if (tasks.isDuplicate(newTodo)) {
+                throw new ChimException("Looks like that todo is already on your list!");
+            }
+            tasks.add(newTodo);
             storage.save(tasks.getTasks());
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
@@ -156,7 +160,11 @@ public class Parser {
                 throw new ChimException("OOPS!!! Please give the date in yyyy-mm-dd format, e.g. 2019-10-15.");
             }
 
-            tasks.add(new Deadline(description, byDate));
+            Deadline newDeadline = new Deadline(description, byDate);
+            if (tasks.isDuplicate(newDeadline)) {
+                throw new ChimException("Looks like that deadline is already on your list!");
+            }
+            tasks.add(newDeadline);
             storage.save(tasks.getTasks());
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
@@ -195,7 +203,11 @@ public class Parser {
             checkNoPipeCharacter(to);
             checkEventDateOrder(from, to);
 
-            tasks.add(new Event(description, from, to));
+            Event newEvent = new Event(description, from, to);
+            if (tasks.isDuplicate(newEvent)) {
+                throw new ChimException("Looks like that event is already on your list!");
+            }
+            tasks.add(newEvent);
             storage.save(tasks.getTasks());
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
