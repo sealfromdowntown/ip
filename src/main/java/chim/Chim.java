@@ -19,6 +19,7 @@ public class Chim {
     private final TaskList tasks;
     private final Ui ui;
     private final Parser parser;
+    private boolean lastResponseIsError;
 
     /**
      * Creates a Chim chatbot that loads and saves its tasks at the given
@@ -76,14 +77,28 @@ public class Chim {
      */
     public String getResponse(String input) {
         try {
-            return parser.parseAndExecute(input, tasks, ui, storage);
+            String response = parser.parseAndExecute(input, tasks, ui, storage);
+            lastResponseIsError = false;
+            return response;
         } catch (ChimException e) {
+            lastResponseIsError = true;
             return e.getMessage();
         } catch (NumberFormatException e) {
+            lastResponseIsError = true;
             return "OOPS!!! Please provide a valid task number.";
         } catch (ArrayIndexOutOfBoundsException e) {
+            lastResponseIsError = true;
             return "OOPS!!! That task number doesn't exist in your list.";
         }
+    }
+
+    /**
+     * Returns whether the most recent call to getResponse resulted in an error.
+     *
+     * @return true if the last response was an error message.
+     */
+    public boolean isLastResponseError() {
+        return lastResponseIsError;
     }
 
     /**

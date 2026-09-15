@@ -6,12 +6,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity"
+<AnchorPane minHeight="220.0" minWidth="417.0"
             prefHeight="600.0" prefWidth="400.0"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="chim.gui.MainWindow">
+            fx:controller="chim.gui.MainWindow"
+            stylesheets="@../css/main.css">
     <children>
         <TextField fx:id="userInput"
                    promptText="Type a command..."

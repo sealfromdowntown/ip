@@ -59,16 +59,21 @@ public class DialogBox extends HBox {
         return new DialogBox(text, img);
     }
 
-    /**
+        /**
      * Creates a dialog box for a message from Chim, flipped to the left.
+     * Applies an error style if the message represents an error response.
      *
      * @param text Message text.
      * @param img Chim's avatar image.
+     * @param isError Whether this message is an error response.
      * @return A left-aligned dialog box.
      */
-    public static DialogBox getChimDialog(String text, Image img) {
+    public static DialogBox getChimDialog(String text, Image img, boolean isError) {
         var db = new DialogBox(text, img);
         db.flip();
+        if (isError) {
+            db.dialog.getStyleClass().add("error-label");
+        }
         return db;
     }
 }

@@ -1,26 +1,28 @@
 .root {
-    main-color: rgb(237, 255, 242);
-    -fx-background-color: main-color;
-    -fx-background-image: url("../images/background.jpg");
-    -fx-background-size: cover;
+    -fx-background-color: #f4f6fb;
 }
 
-.text-field {
-@@ -23,7 +25,10 @@
-    -fx-font-size: 20px;
-}
-
-.scroll-pane,
-.scroll-pane {
-    -fx-background-color: rgba(255, 255, 255, 0.6);
-}
-
-.scroll-pane .viewport {
+.scroll-pane, .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
 
-.dialog-label {
+.text-field {
     -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-padding: 8 10 8 10;
+    -fx-background-radius: 20;
+    -fx-border-color: #d0d5e0;
+    -fx-border-radius: 20;
+    -fx-padding: 8 14 8 14;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: #4a6fe3;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #3a5bd0;
 }
