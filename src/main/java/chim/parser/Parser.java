@@ -132,6 +132,9 @@ public class Parser {
             if (!rest.contains(DEADLINE_SEPARATOR)) {
                 throw new ChimException("Don't forget the '/by' and a due date for your deadline!");
             }
+            if (countOccurrences(rest, "/by") > 1) {
+                throw new ChimException("Whoops, I see more than one '/by'! Please use it just once.");
+            }
 
             String[] parts = rest.split(DEADLINE_SEPARATOR, 2);
             String description = parts[0].trim();
@@ -166,6 +169,9 @@ public class Parser {
             }
             if (!rest.contains(EVENT_FROM_SEPARATOR) || !rest.contains(EVENT_TO_SEPARATOR)) {
                 throw new ChimException("OOPS!!! An event needs both '/from' and '/to' times.");
+            }
+            if (countOccurrences(rest, "/from") > 1 || countOccurrences(rest, "/to") > 1) {
+                throw new ChimException("Whoops, I see '/from' or '/to' more than once! Please use each just once.");
             }
 
             String[] fromSplit = rest.split(EVENT_FROM_SEPARATOR, 2);
@@ -220,5 +226,22 @@ public class Parser {
      */
     private boolean matchesCommand(String input, String command) {
         return input.equals(command) || input.startsWith(command + " ");
+    }
+
+    /**
+     * Counts how many times a substring occurs within a string.
+     *
+     * @param text Text to search within.
+     * @param target Substring to count occurrences of.
+     * @return Number of occurrences.
+     */
+    private int countOccurrences(String text, String target) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(target, index)) != -1) {
+            count++;
+            index += target.length();
+        }
+        return count;
     }
 }
