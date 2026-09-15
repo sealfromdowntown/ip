@@ -53,7 +53,7 @@ public class Parser {
             return ui.getTaskListMessage(tasks.getTasks());
         }
 
-        if (input.startsWith(COMMAND_FIND)) {
+        if (matchesCommand(input, COMMAND_FIND)) {
             String keyword = input.length() > COMMAND_FIND.length()
                     ? input.substring(COMMAND_FIND.length()).trim()
                     : "";
@@ -63,7 +63,7 @@ public class Parser {
             return ui.getMatchingTasksMessage(tasks.find(keyword));
         }
 
-        if (input.startsWith(COMMAND_MARK)) {
+        if (matchesCommand(input, COMMAND_MARK)) {
             int index = parseIndex(input, COMMAND_MARK, tasks.size());
             Task task = tasks.get(index);
             task.markAsDone();
@@ -71,7 +71,7 @@ public class Parser {
             return ui.getTaskMarkedMessage(task);
         }
 
-        if (input.startsWith(COMMAND_UNMARK)) {
+        if (matchesCommand(input, COMMAND_UNMARK)) {
             int index = parseIndex(input, COMMAND_UNMARK, tasks.size());
             Task task = tasks.get(index);
             task.markAsNotDone();
@@ -79,14 +79,14 @@ public class Parser {
             return ui.getTaskUnmarkedMessage(task);
         }
 
-        if (input.startsWith(COMMAND_DELETE)) {
+        if (matchesCommand(input, COMMAND_DELETE)) {
             int index = parseIndex(input, COMMAND_DELETE, tasks.size());
             Task removed = tasks.delete(index);
             storage.save(tasks.getTasks());
             return ui.getTaskDeletedMessage(removed, tasks.size());
         }
 
-        if (input.startsWith(COMMAND_PRIORITY)) {
+        if (matchesCommand(input, COMMAND_PRIORITY)) {
             String rest = input.length() > COMMAND_PRIORITY.length()
                     ? input.substring(COMMAND_PRIORITY.length()).trim()
                     : "";
@@ -110,7 +110,7 @@ public class Parser {
             return ui.getTaskPriorityMessage(task);
         }
 
-        if (input.startsWith(COMMAND_TODO)) {
+        if (matchesCommand(input, COMMAND_TODO)) {
             String description = input.length() > COMMAND_TODO.length()
                     ? input.substring(COMMAND_TODO.length()).trim()
                     : "";
@@ -122,7 +122,7 @@ public class Parser {
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
-        if (input.startsWith(COMMAND_DEADLINE)) {
+        if (matchesCommand(input, COMMAND_DEADLINE)) {
             String rest = input.length() > COMMAND_DEADLINE.length()
                     ? input.substring(COMMAND_DEADLINE.length()).trim()
                     : "";
@@ -156,7 +156,7 @@ public class Parser {
             return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
         }
 
-        if (input.startsWith(COMMAND_EVENT)) {
+        if (matchesCommand(input, COMMAND_EVENT)) {
             String rest = input.length() > COMMAND_EVENT.length()
                     ? input.substring(COMMAND_EVENT.length()).trim()
                     : "";
@@ -164,15 +164,15 @@ public class Parser {
             if (rest.isEmpty()) {
                 throw new ChimException("An event needs a description! What's happening?");
             }
-            if (!rest.contains("/from") || !rest.contains("/to")) {
+            if (!rest.contains(EVENT_FROM_SEPARATOR) || !rest.contains(EVENT_TO_SEPARATOR)) {
                 throw new ChimException("OOPS!!! An event needs both '/from' and '/to' times.");
             }
 
-            String[] fromSplit = rest.split("/from", 2);
+            String[] fromSplit = rest.split(EVENT_FROM_SEPARATOR, 2);
             String description = fromSplit[0].trim();
             String remainder = fromSplit[1].trim();
 
-            String[] toSplit = remainder.split("/to", 2);
+            String[] toSplit = remainder.split(EVENT_TO_SEPARATOR, 2);
             String from = toSplit[0].trim();
             String to = toSplit.length > 1 ? toSplit[1].trim() : "";
 
@@ -207,5 +207,18 @@ public class Parser {
         assert index >= 0 && index < taskCount : "Parsed index should be within task list bounds";
 
         return index;
+    }
+
+    /**
+     * Returns whether the input is exactly the given command word, or
+     * starts with that command word followed by a space (i.e. a genuine
+     * word match, not just a shared prefix like "todoodle" matching "todo").
+     *
+     * @param input Raw user input.
+     * @param command Command word to check for.
+     * @return true if input is a real match for the command word.
+     */
+    private boolean matchesCommand(String input, String command) {
+        return input.equals(command) || input.startsWith(command + " ");
     }
 }
