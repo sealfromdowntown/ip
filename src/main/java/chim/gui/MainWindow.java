@@ -51,9 +51,10 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText();
         String response = chim.getResponse(input);
+        boolean isError = chim.isLastResponseError();
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getChimDialog(response, chimImage)
+                DialogBox.getChimDialog(response, chimImage, isError)
         );
         userInput.clear();
 
