@@ -84,11 +84,9 @@ public class Chim {
             lastResponseIsError = true;
             return e.getMessage();
         } catch (NumberFormatException e) {
-            lastResponseIsError = true;
-            return "OOPS!!! Please provide a valid task number.";
+            return "That doesn't look like a valid task number to me!";
         } catch (ArrayIndexOutOfBoundsException e) {
-            lastResponseIsError = true;
-            return "OOPS!!! That task number doesn't exist in your list.";
+            return "Hmm, I don't see a task with that number on your list.";
         }
     }
 

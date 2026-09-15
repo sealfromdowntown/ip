@@ -58,7 +58,7 @@ public class Parser {
                     ? input.substring(COMMAND_FIND.length()).trim()
                     : "";
             if (keyword.isEmpty()) {
-                throw new ChimException("OOPS!!! Please provide a keyword to search for.");
+                throw new ChimException("Ooh, what should I search for? Give me a word!");
             }
             return ui.getMatchingTasksMessage(tasks.find(keyword));
         }
@@ -115,7 +115,7 @@ public class Parser {
                     ? input.substring(COMMAND_TODO.length()).trim()
                     : "";
             if (description.isEmpty()) {
-                throw new ChimException("OOPS!!! The description of a todo cannot be empty.");
+                throw new ChimException("A TODO needs a description! What's happening?");
             }
             tasks.add(new Todo(description));
             storage.save(tasks.getTasks());
@@ -127,10 +127,10 @@ public class Parser {
                     ? input.substring(COMMAND_DEADLINE.length()).trim()
                     : "";
             if (rest.isEmpty()) {
-                throw new ChimException("OOPS!!! The description of a deadline cannot be empty.");
+                throw new ChimException("A deadline needs a description! What's happening?");
             }
             if (!rest.contains(DEADLINE_SEPARATOR)) {
-                throw new ChimException("OOPS!!! A deadline needs a '/by' with the due date/time.");
+                throw new ChimException("Don't forget the '/by' and a due date for your deadline!");
             }
 
             String[] parts = rest.split(DEADLINE_SEPARATOR, 2);
@@ -138,7 +138,7 @@ public class Parser {
             String by = parts[1].trim();
 
             if (description.isEmpty()) {
-                throw new ChimException("OOPS!!! The description of a deadline cannot be empty.");
+                throw new ChimException("An event needs a description! What's happening?");
             }
             if (by.isEmpty()) {
                 throw new ChimException("OOPS!!! Please tell me when the deadline is due.");
@@ -162,7 +162,7 @@ public class Parser {
                     : "";
 
             if (rest.isEmpty()) {
-                throw new ChimException("OOPS!!! The description of an event cannot be empty.");
+                throw new ChimException("An event needs a description! What's happening?");
             }
             if (!rest.contains("/from") || !rest.contains("/to")) {
                 throw new ChimException("OOPS!!! An event needs both '/from' and '/to' times.");
@@ -177,7 +177,7 @@ public class Parser {
             String to = toSplit.length > 1 ? toSplit[1].trim() : "";
 
             if (description.isEmpty()) {
-                throw new ChimException("OOPS!!! The description of an event cannot be empty.");
+                throw new ChimException("An event needs a description! What's happening?");
             }
             if (from.isEmpty() || to.isEmpty()) {
                 throw new ChimException("OOPS!!! Please provide both a start and end time for the event.");
@@ -195,13 +195,13 @@ public class Parser {
         String numberPart = input.length() > command.length() ? input.substring(command.length()).trim() : "";
 
         if (numberPart.isEmpty()) {
-            throw new ChimException("OOPS!!! Please specify which task number to " + command + ".");
+            throw new ChimException("Which task number should I " + command + "? Tell me the number!");
         }
 
         int index = Integer.parseInt(numberPart) - 1;
 
         if (index < 0 || index >= taskCount) {
-            throw new ChimException("OOPS!!! That task number doesn't exist in your list.");
+            throw new ChimException("Hmm, I don't see a task with that number on your list.");
         }
 
         assert index >= 0 && index < taskCount : "Parsed index should be within task list bounds";
