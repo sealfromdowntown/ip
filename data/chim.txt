@@ -1,9 +1,4 @@
-T | 1 | read book
-T | 0 | read
-T | 0 | read book
-D | 0 | return book | 2019-06-06
-E | 0 | project meeting | 2pm | 4pm
-T | 0 | book
-T | 0 | read
-T | 0 | buy
-T | 0 | fin hw
+T | 0 | none | read book
+D | 0 | none | return book | 2019-10-15
+T | 0 | none | read book
+D | 0 | none | return book | 2019-10-15
