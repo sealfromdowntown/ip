@@ -12,7 +12,7 @@ any point-and-click app.
 2. Download the latest `chim.jar` from the [releases page](https://github.com/sealfromdowntown/ip/releases).
 3. Copy the file to the folder you want to use as the home folder for Chim.
 4. Open a command terminal, `cd` into the folder containing the jar file, and run:
-5.    A GUI similar to the one below should appear in a few seconds.
+     A GUI similar to the one below should appear in a few seconds.
 5. Type a command in the text box and press Enter or click **Send** to try it out. Some examples:
     - `list` — shows all your tasks
     - `todo read book` — adds a todo
