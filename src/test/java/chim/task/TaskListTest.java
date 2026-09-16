@@ -77,4 +77,44 @@ public class TaskListTest {
         assertEquals(1, taskList.getTasks().size());
         assertTrue(taskList.getTasks().contains(todo));
     }
+
+    @Test
+    public void find_matchingKeyword_returnsMatchingTasks() {
+        taskList.add(new Todo("read book"));
+        taskList.add(new Todo("write essay"));
+
+        ArrayList<Task> results = taskList.find("book");
+
+        assertEquals(1, results.size());
+        assertEquals("read book", results.get(0).getDescription());
+    }
+
+    @Test
+    public void find_caseInsensitive_stillMatches() {
+        taskList.add(new Todo("Read Book"));
+
+        ArrayList<Task> results = taskList.find("book");
+
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void find_noMatch_returnsEmptyList() {
+        taskList.add(new Todo("read book"));
+
+        ArrayList<Task> results = taskList.find("xyz");
+
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void find_multipleMatches_returnsAllMatching() {
+        taskList.add(new Todo("read book"));
+        taskList.add(new Todo("return book"));
+        taskList.add(new Todo("write essay"));
+
+        ArrayList<Task> results = taskList.find("book");
+
+        assertEquals(2, results.size());
+    }
 }
