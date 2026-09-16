@@ -54,165 +54,201 @@ public class Parser {
         }
 
         if (matchesCommand(input, COMMAND_FIND)) {
-            String keyword = input.length() > COMMAND_FIND.length()
-                    ? input.substring(COMMAND_FIND.length()).trim()
-                    : "";
-            if (keyword.isEmpty()) {
-                throw new ChimException("Ooh, what should I search for? Give me a word!");
-            }
-            return ui.getMatchingTasksMessage(tasks.find(keyword));
+            return handleFind(input, tasks, ui);
         }
 
         if (matchesCommand(input, COMMAND_MARK)) {
-            int index = parseIndex(input, COMMAND_MARK, tasks.size());
-            Task task = tasks.get(index);
-            task.markAsDone();
-            storage.save(tasks.getTasks());
-            return ui.getTaskMarkedMessage(task);
+            return handleMark(input, tasks, ui, storage);
         }
 
         if (matchesCommand(input, COMMAND_UNMARK)) {
-            int index = parseIndex(input, COMMAND_UNMARK, tasks.size());
-            Task task = tasks.get(index);
-            task.markAsNotDone();
-            storage.save(tasks.getTasks());
-            return ui.getTaskUnmarkedMessage(task);
+            return handleUnmark(input, tasks, ui, storage);
         }
 
         if (matchesCommand(input, COMMAND_DELETE)) {
-            int index = parseIndex(input, COMMAND_DELETE, tasks.size());
-            Task removed = tasks.delete(index);
-            storage.save(tasks.getTasks());
-            return ui.getTaskDeletedMessage(removed, tasks.size());
+            return handleDelete(input, tasks, ui, storage);
         }
 
         if (matchesCommand(input, COMMAND_PRIORITY)) {
-            String rest = input.length() > COMMAND_PRIORITY.length()
-                    ? input.substring(COMMAND_PRIORITY.length()).trim()
-                    : "";
-
-            String[] parts = rest.split(" ", 2);
-            if (parts.length < 2) {
-                throw new ChimException("OOPS!!! Please provide a task number and priority.");
-            }
-
-            int index = parseIndex(COMMAND_PRIORITY + " " + parts[0], COMMAND_PRIORITY, tasks.size());
-            String priority = parts[1].trim().toLowerCase();
-
-            if (!priority.equals("high") && !priority.equals("medium")
-                    && !priority.equals("low") && !priority.equals("none")) {
-                throw new ChimException("OOPS!!! Priority must be high, medium, low, or none.");
-            }
-
-            Task task = tasks.get(index);
-            task.setPriority(priority);
-            storage.save(tasks.getTasks());
-            return ui.getTaskPriorityMessage(task);
+            return handlePriority(input, tasks, ui, storage);
         }
 
         if (matchesCommand(input, COMMAND_TODO)) {
-            String description = input.length() > COMMAND_TODO.length()
-                    ? input.substring(COMMAND_TODO.length()).trim()
-                    : "";
-            if (description.isEmpty()) {
-                throw new ChimException("A todo needs a description! What should I add?");
-            }
-            checkNoPipeCharacter(description);
-            Todo newTodo = new Todo(description);
-            if (tasks.isDuplicate(newTodo)) {
-                throw new ChimException("Looks like that todo is already on your list!");
-            }
-            tasks.add(newTodo);
-            storage.save(tasks.getTasks());
-            return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
+            return handleTodo(input, tasks, ui, storage);
         }
 
         if (matchesCommand(input, COMMAND_DEADLINE)) {
-            String rest = input.length() > COMMAND_DEADLINE.length()
-                    ? input.substring(COMMAND_DEADLINE.length()).trim()
-                    : "";
-            if (rest.isEmpty()) {
-                throw new ChimException("A deadline needs a description! What's happening?");
-            }
-            if (!rest.contains(DEADLINE_SEPARATOR)) {
-                throw new ChimException("Don't forget the '/by' and a due date for your deadline!");
-            }
-            if (countOccurrences(rest, DEADLINE_SEPARATOR) > 1) {
-                throw new ChimException("Whoops, I see more than one '/by'! Please use it just once.");
-            }
-
-            String[] parts = rest.split(DEADLINE_SEPARATOR, 2);
-            String description = parts[0].trim();
-            String by = parts[1].trim();
-
-            if (description.isEmpty()) {
-                throw new ChimException("A deadline needs a description! What's happening?");
-            }
-            if (by.isEmpty()) {
-                throw new ChimException("When's this deadline due? Add a date after '/by'!");
-            }
-            checkNoPipeCharacter(description);
-
-            LocalDate byDate;
-            try {
-                byDate = LocalDate.parse(by);
-            } catch (DateTimeParseException e) {
-                throw new ChimException("OOPS!!! Please give the date in yyyy-mm-dd format, e.g. 2019-10-15.");
-            }
-
-            Deadline newDeadline = new Deadline(description, byDate);
-            if (tasks.isDuplicate(newDeadline)) {
-                throw new ChimException("Looks like that deadline is already on your list!");
-            }
-            tasks.add(newDeadline);
-            storage.save(tasks.getTasks());
-            return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
+            return handleDeadline(input, tasks, ui, storage);
         }
 
         if (matchesCommand(input, COMMAND_EVENT)) {
-            String rest = input.length() > COMMAND_EVENT.length()
-                    ? input.substring(COMMAND_EVENT.length()).trim()
-                    : "";
-
-            if (rest.isEmpty()) {
-                throw new ChimException("An event needs a description! What's happening?");
-            }
-            if (!rest.contains(EVENT_FROM_SEPARATOR) || !rest.contains(EVENT_TO_SEPARATOR)) {
-                throw new ChimException("OOPS!!! An event needs both '/from' and '/to' times.");
-            }
-            if (countOccurrences(rest, EVENT_FROM_SEPARATOR) > 1 || countOccurrences(rest, EVENT_TO_SEPARATOR) > 1) {
-                throw new ChimException("Whoops, I see '/from' or '/to' more than once! Please use each just once.");
-            }
-
-            String[] fromSplit = rest.split(EVENT_FROM_SEPARATOR, 2);
-            String description = fromSplit[0].trim();
-            String remainder = fromSplit[1].trim();
-
-            String[] toSplit = remainder.split(EVENT_TO_SEPARATOR, 2);
-            String from = toSplit[0].trim();
-            String to = toSplit.length > 1 ? toSplit[1].trim() : "";
-
-            if (description.isEmpty()) {
-                throw new ChimException("An event needs a description! What's happening?");
-            }
-            if (from.isEmpty() || to.isEmpty()) {
-                throw new ChimException("I need both a start and end time for that event!");
-            }
-            checkNoPipeCharacter(description);
-            checkNoPipeCharacter(from);
-            checkNoPipeCharacter(to);
-            checkEventDateOrder(from, to);
-
-            Event newEvent = new Event(description, from, to);
-            if (tasks.isDuplicate(newEvent)) {
-                throw new ChimException("Looks like that event is already on your list!");
-            }
-            tasks.add(newEvent);
-            storage.save(tasks.getTasks());
-            return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
+            return handleEvent(input, tasks, ui, storage);
         }
 
         throw new ChimException("Chim does not understand what that means :-(");
+    }
+
+    private String handleFind(String input, TaskList tasks, Ui ui) throws ChimException {
+        String keyword = input.length() > COMMAND_FIND.length()
+                ? input.substring(COMMAND_FIND.length()).trim()
+                : "";
+        if (keyword.isEmpty()) {
+            throw new ChimException("Ooh, what should I search for? Give me a word!");
+        }
+        return ui.getMatchingTasksMessage(tasks.find(keyword));
+    }
+
+    private String handleMark(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+        int index = parseIndex(input, COMMAND_MARK, tasks.size());
+        Task task = tasks.get(index);
+        task.markAsDone();
+        storage.save(tasks.getTasks());
+        return ui.getTaskMarkedMessage(task);
+    }
+
+    private String handleUnmark(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+        int index = parseIndex(input, COMMAND_UNMARK, tasks.size());
+        Task task = tasks.get(index);
+        task.markAsNotDone();
+        storage.save(tasks.getTasks());
+        return ui.getTaskUnmarkedMessage(task);
+    }
+
+    private String handleDelete(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+        int index = parseIndex(input, COMMAND_DELETE, tasks.size());
+        Task removed = tasks.delete(index);
+        storage.save(tasks.getTasks());
+        return ui.getTaskDeletedMessage(removed, tasks.size());
+    }
+
+    private String handlePriority(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+        String rest = input.length() > COMMAND_PRIORITY.length()
+                ? input.substring(COMMAND_PRIORITY.length()).trim()
+                : "";
+
+        String[] parts = rest.split(" ", 2);
+        if (parts.length < 2) {
+            throw new ChimException("Please provide a task number and priority.");
+        }
+
+        int index = parseIndex(COMMAND_PRIORITY + " " + parts[0], COMMAND_PRIORITY, tasks.size());
+        String priority = parts[1].trim().toLowerCase();
+
+        if (!priority.equals("high") && !priority.equals("medium")
+                && !priority.equals("low") && !priority.equals("none")) {
+            throw new ChimException("Priority must be high, medium, low, or none.");
+        }
+
+        Task task = tasks.get(index);
+        task.setPriority(priority);
+        storage.save(tasks.getTasks());
+        return ui.getTaskPriorityMessage(task);
+    }
+
+    private String handleTodo(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+        String description = input.length() > COMMAND_TODO.length()
+                ? input.substring(COMMAND_TODO.length()).trim()
+                : "";
+        if (description.isEmpty()) {
+            throw new ChimException("A todo needs a description! What should I add?");
+        }
+        checkNoPipeCharacter(description);
+
+        Todo newTodo = new Todo(description);
+        if (tasks.isDuplicate(newTodo)) {
+            throw new ChimException("Looks like that todo is already on your list!");
+        }
+
+        tasks.add(newTodo);
+        storage.save(tasks.getTasks());
+        return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
+    }
+
+    private String handleDeadline(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+        String rest = input.length() > COMMAND_DEADLINE.length()
+                ? input.substring(COMMAND_DEADLINE.length()).trim()
+                : "";
+        if (rest.isEmpty()) {
+            throw new ChimException("A deadline needs a description! What's happening?");
+        }
+        if (!rest.contains(DEADLINE_SEPARATOR)) {
+            throw new ChimException("Don't forget the '/by' and a due date for your deadline!");
+        }
+        if (countOccurrences(rest, DEADLINE_SEPARATOR) > 1) {
+            throw new ChimException("Whoops, I see more than one '/by'! Please use it just once.");
+        }
+
+        String[] parts = rest.split(DEADLINE_SEPARATOR, 2);
+        String description = parts[0].trim();
+        String by = parts[1].trim();
+
+        if (description.isEmpty()) {
+            throw new ChimException("A deadline needs a description! What's happening?");
+        }
+        if (by.isEmpty()) {
+            throw new ChimException("When's this deadline due? Add a date after '/by'!");
+        }
+        checkNoPipeCharacter(description);
+
+        LocalDate byDate;
+        try {
+            byDate = LocalDate.parse(by);
+        } catch (DateTimeParseException e) {
+            throw new ChimException("That date looks a bit off! Try yyyy-mm-dd, like 2019-10-15.");
+        }
+
+        Deadline newDeadline = new Deadline(description, byDate);
+        if (tasks.isDuplicate(newDeadline)) {
+            throw new ChimException("Looks like that deadline is already on your list!");
+        }
+
+        tasks.add(newDeadline);
+        storage.save(tasks.getTasks());
+        return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
+    }
+
+    private String handleEvent(String input, TaskList tasks, Ui ui, Storage storage) throws ChimException {
+        String rest = input.length() > COMMAND_EVENT.length()
+                ? input.substring(COMMAND_EVENT.length()).trim()
+                : "";
+
+        if (rest.isEmpty()) {
+            throw new ChimException("An event needs a description! What's happening?");
+        }
+        if (!rest.contains(EVENT_FROM_SEPARATOR) || !rest.contains(EVENT_TO_SEPARATOR)) {
+            throw new ChimException("Don't forget the '/from' and '/to' times for your event!");
+        }
+        if (countOccurrences(rest, EVENT_FROM_SEPARATOR) > 1 || countOccurrences(rest, EVENT_TO_SEPARATOR) > 1) {
+            throw new ChimException("Whoops, I see '/from' or '/to' more than once! Please use each just once.");
+        }
+
+        String[] fromSplit = rest.split(EVENT_FROM_SEPARATOR, 2);
+        String description = fromSplit[0].trim();
+        String remainder = fromSplit[1].trim();
+
+        String[] toSplit = remainder.split(EVENT_TO_SEPARATOR, 2);
+        String from = toSplit[0].trim();
+        String to = toSplit.length > 1 ? toSplit[1].trim() : "";
+
+        if (description.isEmpty()) {
+            throw new ChimException("An event needs a description! What's happening?");
+        }
+        if (from.isEmpty() || to.isEmpty()) {
+            throw new ChimException("I need both a start and end time for that event!");
+        }
+        checkNoPipeCharacter(description);
+        checkNoPipeCharacter(from);
+        checkNoPipeCharacter(to);
+        checkEventDateOrder(from, to);
+
+        Event newEvent = new Event(description, from, to);
+        if (tasks.isDuplicate(newEvent)) {
+            throw new ChimException("Looks like that event is already on your list!");
+        }
+
+        tasks.add(newEvent);
+        storage.save(tasks.getTasks());
+        return ui.getTaskAddedMessage(tasks.get(tasks.size() - 1), tasks.size());
     }
 
     private int parseIndex(String input, String command, int taskCount) throws ChimException {
