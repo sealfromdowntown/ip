@@ -1,6 +1,5 @@
 package chim.ui;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import chim.task.Task;
-import chim.task.TaskType;
 import chim.task.Todo;
 
 public class UiTest {

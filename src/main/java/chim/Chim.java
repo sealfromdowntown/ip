@@ -48,7 +48,8 @@ public class Chim {
     public void run() {
         ui.showWelcome();
         if (storage.getSkippedLineCount() > 0) {
-            ui.printMessage(storage.getSkippedLineCount() + " line(s) in your saved data looked off, so I skipped them.");
+            ui.printMessage(storage.getSkippedLineCount()
+                    + " line(s) in your saved data looked off, so I skipped them.");
         }
         Scanner scanner = new Scanner(System.in);
 
